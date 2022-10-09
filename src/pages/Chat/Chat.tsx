@@ -146,6 +146,7 @@ const DesktopView = ({
         }}
         bg={styles.chat.bg}
         color={styles.chat.color}
+        overflowY={"hidden"}
       >
         {id ? <Chatbox id={id} /> : <Introduction />}
       </GridItem>

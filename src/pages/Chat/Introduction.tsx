@@ -36,7 +36,7 @@ function Introduction() {
 			w={"full"}
 			h={"full"}
 			p={4}
-			overflowY={"auto"}
+			overflowY={"scroll"}
 			overflowX={"hidden"}
 			bg={styles.bg}
 			color={styles.color}

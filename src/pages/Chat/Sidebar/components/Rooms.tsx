@@ -1,5 +1,4 @@
 import {
-  Box,
   Flex,
   Heading,
   Icon,
@@ -7,8 +6,10 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import relativeTime from "../../../../utils/relativeTime";
 import { BsFillChatRightFill } from "react-icons/bs";
+import { IoIosShareAlt } from "react-icons/io";
+import distanceNormalize from "../../../../utils/distanceNormalize";
+import relativeTime from "../../../../utils/relativeTime";
 
 function Rooms() {
   return (
@@ -30,10 +31,12 @@ function Room({
   name,
   created_at,
   messageCount = 0,
+  distance = 10,
   background_url,
 }: {
   name: string;
   created_at: string;
+  distance?: number;
   messageCount?: number;
   background_url?: string;
 }) {
@@ -41,6 +44,7 @@ function Room({
   const now = new Date();
 
   const relative = relativeTime(createdAt, now);
+  const normalizedDistance = distanceNormalize(distance);
 
   const styles = {
     bg: {
@@ -72,7 +76,7 @@ function Room({
       backgroundSize: "cover",
     },
     icon: {
-      color: useColorModeValue("gray.500", "gray.600"),
+      color: useColorModeValue("gray.700", "gray.200"),
       text: useColorModeValue("gray.700", "gray.200"),
     },
   };
@@ -95,12 +99,15 @@ function Room({
       userSelect={"none"}
     >
       <Heading size={"md"}>{name}</Heading>
-      <Flex justifyContent={"space-between"} alignItems={"center"} mt={2}>
-        <Text fontSize={"xs"}>{relative}</Text>
+      <Text fontSize={"xs"}>
+        {relative} | {normalizedDistance}
+      </Text>
+      <Flex justifyContent={"flex-end"} alignItems={"center"} mt={2}>
+        <Icon as={BsFillChatRightFill} color={styles.icon.color} mr={1} />
         <Text fontSize={"xs"} fontWeight={"bold"} color={styles.icon.text}>
-          <Icon as={BsFillChatRightFill} color={styles.icon.color} mr={1} />
           {messageCount}
         </Text>
+        <Icon as={IoIosShareAlt} color={styles.icon.color} ml={2} mr={1} />
       </Flex>
     </Flex>
   );

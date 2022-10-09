@@ -5,7 +5,17 @@
  * @access authenticated
  */
 
-import { Avatar, Box, Flex, Text, useColorModeValue } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  Flex,
+  Icon,
+  IconButton,
+  Text,
+  useColorMode,
+  useColorModeValue,
+} from "@chakra-ui/react";
+import { BsFillMoonFill, BsFillSunFill } from "react-icons/bs";
 
 function Bottombar({ emoji, emojiBg }: { emoji: string; emojiBg: string }) {
   const styles = {
@@ -20,11 +30,13 @@ function Bottombar({ emoji, emojiBg }: { emoji: string; emojiBg: string }) {
       h={"50px"}
       borderTop={"1px"}
       borderColor={styles.border}
+      justifyContent={"space-between"}
       zIndex={1}
       bg={styles.bg}
       padding={2}
     >
       <EmojiAvatar emoji={emoji} bg={emojiBg} size={30} />
+      <ThemeSwitcher />
     </Flex>
   );
 }
@@ -50,6 +62,32 @@ const EmojiAvatar = ({
     >
       <Text fontSize={`${(size * 2) / 3}px`}>{emoji}</Text>
     </Flex>
+  );
+};
+
+const ThemeSwitcher = () => {
+  const { colorMode, toggleColorMode } = useColorMode();
+  const style = {
+    color: useColorModeValue("gray.400", "gray.600"),
+    hover: useColorModeValue("gray.500", "gray.400"),
+  };
+
+  return (
+    <IconButton
+      aria-label="theme switcher"
+      color={style.color}
+      icon={
+        colorMode === "light" ? (
+          <Icon as={BsFillMoonFill} />
+        ) : (
+          <Icon as={BsFillSunFill} />
+        )
+      }
+      size="sm"
+      variant="ghost"
+      _hover={{ color: style.hover }}
+      onClick={toggleColorMode}
+    />
   );
 };
 

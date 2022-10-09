@@ -7,8 +7,6 @@ const relativeTime = (from: Date, to: Date) => {
 
   const minutes = Math.floor(diff / 1000 / 60);
 
-  console.log(minutes);
-
   if (Math.abs(minutes) < 60) {
     return relativeFormatter.format(minutes, "minute");
   } else {

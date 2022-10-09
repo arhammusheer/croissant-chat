@@ -35,7 +35,11 @@ function Chat() {
   return (
     <Grid h={"100vh"} w={"full"} templateColumns={"repeat(10, 1fr)"}>
       <GridItem
-        colSpan={2}
+        colSpan={{
+          base: 10,
+          sm: 3,
+          md: 2,
+        }}
         bg={menuStyles.bg}
         color={menuStyles.color}
         overflowY={"hidden"}
@@ -46,7 +50,15 @@ function Chat() {
         </Box>
         <Bottombar emoji={user.avatar.emoji} emojiBg={user.avatar.bg} />
       </GridItem>
-      <GridItem colSpan={8} bg={chatStyles.bg} color={chatStyles.color}>
+      <GridItem
+        colSpan={{
+          base: 10,
+          sm: 7,
+          md: 8,
+        }}
+        bg={chatStyles.bg}
+        color={chatStyles.color}
+      >
         <Text>Chat</Text>
       </GridItem>
     </Grid>

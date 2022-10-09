@@ -7,7 +7,7 @@
 
 import logo from "../../assets/croissant.svg";
 
-import { Grid, GridItem, Text, useColorModeValue } from "@chakra-ui/react";
+import { Box, Grid, GridItem, Text, useColorModeValue } from "@chakra-ui/react";
 import Rooms from "./components/Rooms";
 import Topbar from "./components/Topbar";
 import Bottombar from "./components/Bottombar";
@@ -32,7 +32,9 @@ function Chat() {
         overflowY={"hidden"}
       >
         <Topbar logo={logo} title={"Croissant Chat"} />
-        <Rooms />
+        <Box overflowY={"scroll"} h={window.innerHeight - 100}>
+          <Rooms />
+        </Box>
         <Bottombar />
       </GridItem>
       <GridItem colSpan={8} bg={chatStyles.bg} color={chatStyles.color}>

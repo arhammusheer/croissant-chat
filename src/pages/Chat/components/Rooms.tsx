@@ -12,7 +12,7 @@ import { BsFillChatRightFill } from "react-icons/bs";
 
 function Rooms() {
   return (
-    <Stack spacing={4} p={4} w={"full"} overflowY={"scroll"} zIndex={0}>
+    <Stack spacing={4} p={4} w={"full"} h={"full"} zIndex={0}>
       {example.map((room) => (
         <Room
           name={room.name}
@@ -52,6 +52,9 @@ function Room({
     hover: {
       bg: useColorModeValue("gray.100", "gray.800"),
     },
+    click: {
+      bg: useColorModeValue("gray.200", "gray.700"),
+    },
     icon: {
       color: useColorModeValue("gray.400", "gray.600"),
       text: useColorModeValue("gray.600", "gray.400"),
@@ -68,6 +71,9 @@ function Room({
       borderColor={styles.border}
       color={styles.color}
       _hover={styles.hover}
+      cursor={"pointer"}
+      transition={"all 0.1s ease-in-out"}
+      _active={styles.click}
     >
       <Heading size={"md"}>{name}</Heading>
       <Flex justifyContent={"space-between"} alignItems={"center"} mt={2}>

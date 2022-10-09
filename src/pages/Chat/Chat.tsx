@@ -221,7 +221,7 @@ const MobileView = ({
         isOpen={isOpen}
         placement={id === "introduction" ? "top" : "right"}
         onClose={onClose}
-        size={id === "introduction" ? "full" : "xs"}
+        size={id === "introduction" ? "xs" : "full"}
       >
         <DrawerOverlay />
         <DrawerContent bg={styles.base.bg} color={styles.chat.color}>

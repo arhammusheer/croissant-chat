@@ -11,8 +11,17 @@ import { Box, Grid, GridItem, Text, useColorModeValue } from "@chakra-ui/react";
 import Rooms from "./components/Rooms";
 import Topbar from "./components/Topbar";
 import Bottombar from "./components/Bottombar";
+import { useState } from "react";
 
 function Chat() {
+  const [user, setUser] = useState({
+    name: "croissant#3831",
+    avatar: {
+      emoji: "🍩",
+      bg: "yellow.400",
+    },
+  });
+
   const menuStyles = {
     bg: useColorModeValue("white", "gray.900"),
     color: useColorModeValue("gray.800", "white"),
@@ -35,7 +44,7 @@ function Chat() {
         <Box overflowY={"scroll"} h={window.innerHeight - 100}>
           <Rooms />
         </Box>
-        <Bottombar />
+        <Bottombar emoji={user.avatar.emoji} emojiBg={user.avatar.bg} />
       </GridItem>
       <GridItem colSpan={8} bg={chatStyles.bg} color={chatStyles.color}>
         <Text>Chat</Text>

@@ -74,6 +74,7 @@ function Room({
       cursor={"pointer"}
       transition={"all 0.1s ease-in-out"}
       _active={styles.click}
+      userSelect={"none"}
     >
       <Heading size={"md"}>{name}</Heading>
       <Flex justifyContent={"space-between"} alignItems={"center"} mt={2}>

@@ -14,6 +14,7 @@ import {
   DrawerBody,
   DrawerContent,
   DrawerOverlay,
+  Flex,
   Grid,
   GridItem,
   Text,
@@ -123,6 +124,17 @@ const DesktopView = ({
         <Topbar logo={logo} title={"Croissant Chat"} />
         <Box overflowY={"scroll"} h={window.innerHeight - 100}>
           <Rooms setId={setId} />
+          <Flex
+            h={"100px"}
+            align={"center"}
+            justify={"center"}
+            py={8}
+            my={"50px"}
+            direction={"column"}
+          >
+            <Text fontSize={"xs"}>You have reached the end</Text>
+            <Text fontSize={"sm"}>Here is a croissant 🥐</Text>
+          </Flex>
         </Box>
         <Bottombar emoji={user.avatar.emoji} emojiBg={user.avatar.bg} />
       </GridItem>
@@ -173,6 +185,17 @@ const MobileView = ({
       <Topbar logo={logo} title={"Croissant Chat"} />
       <Box overflowY={"scroll"} h={window.innerHeight - 100}>
         <Rooms setId={setId} />
+        <Flex
+          pt={"200px"}
+          align={"center"}
+          justify={"center"}
+          py={8}
+          my={"50px"}
+          direction={"column"}
+        >
+          <Text fontSize={"xs"}>You have reached the end</Text>
+          <Text fontSize={"sm"}>Here is a croissant 🥐</Text>
+        </Flex>
       </Box>
       <Bottombar emoji={user.avatar.emoji} emojiBg={user.avatar.bg} />
       <Drawer isOpen={isOpen} placement="bottom" onClose={onClose} size="full">

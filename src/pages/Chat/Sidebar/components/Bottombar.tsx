@@ -9,11 +9,13 @@ import {
   Flex,
   Icon,
   IconButton,
+  Spacer,
   Text,
   useColorMode,
   useColorModeValue,
 } from "@chakra-ui/react";
 import { BsFillMoonFill, BsFillSunFill } from "react-icons/bs";
+import StartNew from "./StartNew";
 
 function Bottombar({ emoji, emojiBg }: { emoji: string; emojiBg: string }) {
   const styles = {
@@ -34,6 +36,8 @@ function Bottombar({ emoji, emojiBg }: { emoji: string; emojiBg: string }) {
       bottom={0}
     >
       <EmojiAvatar emoji={emoji} bg={emojiBg} size={30} />
+      <Spacer />
+      <StartNew />
       <ThemeSwitcher />
     </Flex>
   );

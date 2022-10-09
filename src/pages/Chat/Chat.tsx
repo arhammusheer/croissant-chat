@@ -17,6 +17,7 @@ import {
   Flex,
   Grid,
   GridItem,
+  IconButton,
   Text,
   useBreakpointValue,
   useColorModeValue,
@@ -28,9 +29,10 @@ import Bottombar from "./Sidebar/components/Bottombar";
 import { useEffect, useState } from "react";
 import Chatbox from "./Chatbox/Chatbox";
 import Introduction from "./Introduction";
+import { IoIosClose } from "react-icons/io";
 
 function Chat() {
-  const [activeId, setActiveId] = useState("");
+  const [activeId, setActiveId] = useState("introduction");
 
   const [user, setUser] = useState({
     name: "croissant#3831",
@@ -148,7 +150,7 @@ const DesktopView = ({
         color={styles.chat.color}
         overflowY={"hidden"}
       >
-        {id ? <Chatbox id={id} /> : <Introduction />}
+        {id && id !=="introduction" ? <Chatbox id={id} /> : <Introduction />}
       </GridItem>
     </Grid>
   );
@@ -170,7 +172,7 @@ const MobileView = ({
   };
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure({
-    defaultIsOpen: false,
+    defaultIsOpen: true,
   });
 
   useEffect(() => {
@@ -203,8 +205,18 @@ const MobileView = ({
         <DrawerOverlay />
         <DrawerContent bg={styles.base.bg}>
           <DrawerBody>
-            <Button onClick={() => setId("")}>Back</Button>
-            <Chatbox id="Chatbox" />
+            <IconButton
+              onClick={() => setId("")}
+              icon={<IoIosClose />}
+              aria-label="Close"
+              size={"sm"}
+              variant={"ghost"}
+            />
+            {id && id !== "introduction" ? (
+              <Chatbox id={id} />
+            ) : (
+              <Introduction />
+            )}
           </DrawerBody>
         </DrawerContent>
       </Drawer>

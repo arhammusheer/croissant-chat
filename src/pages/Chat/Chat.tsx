@@ -8,10 +8,11 @@
 import logo from "../../assets/croissant.svg";
 
 import { Box, Grid, GridItem, Text, useColorModeValue } from "@chakra-ui/react";
-import Rooms from "./components/Rooms";
-import Topbar from "./components/Topbar";
-import Bottombar from "./components/Bottombar";
+import Rooms from "./Sidebar/components/Rooms";
+import Topbar from "./Sidebar/components/Topbar";
+import Bottombar from "./Sidebar/components/Bottombar";
 import { useState } from "react";
+import Chatbox from "./Chatbox/Chatbox";
 
 function Chat() {
   const [user, setUser] = useState({
@@ -23,26 +24,38 @@ function Chat() {
   });
 
   const menuStyles = {
-    bg: useColorModeValue("white", "gray.900"),
+    bg: useColorModeValue("white", "black"),
     color: useColorModeValue("gray.800", "white"),
+    border: useColorModeValue("gray.200", "gray.900"),
   };
 
   const chatStyles = {
-    bg: useColorModeValue("gray.50", "gray.800"),
+    bg: useColorModeValue("gray.50", "black"),
     color: useColorModeValue("gray.800", "white"),
   };
 
+  const baseStyles = {
+    bg: useColorModeValue("white", "black"),
+  };
+
   return (
-    <Grid h={"100vh"} w={"full"} templateColumns={"repeat(10, 1fr)"}>
+    <Grid
+      h={"100vh"}
+      w={"full"}
+      templateColumns={"repeat(10, 1fr)"}
+      bg={baseStyles.bg}
+    >
       <GridItem
         colSpan={{
           base: 10,
-          sm: 3,
+          sm: 4,
           md: 2,
         }}
         bg={menuStyles.bg}
         color={menuStyles.color}
         overflowY={"hidden"}
+        borderRight={"1px"}
+        borderColor={menuStyles.border}
       >
         <Topbar logo={logo} title={"Croissant Chat"} />
         <Box overflowY={"scroll"} h={window.innerHeight - 100}>
@@ -53,13 +66,13 @@ function Chat() {
       <GridItem
         colSpan={{
           base: 10,
-          sm: 7,
+          sm: 6,
           md: 8,
         }}
         bg={chatStyles.bg}
         color={chatStyles.color}
       >
-        <Text>Chat</Text>
+        <Chatbox id={"test"} />
       </GridItem>
     </Grid>
   );

@@ -7,27 +7,18 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import relativeTime from "../../../utils/relativeTime";
+import relativeTime from "../../../../utils/relativeTime";
 import { BsFillChatRightFill } from "react-icons/bs";
 
 function Rooms() {
   return (
-    <Stack spacing={4} p={4} w={"full"} h={"full"} zIndex={0}>
+    <Stack spacing={2} p={2} w={"full"} h={"full"} zIndex={0}>
       {example.map((room) => (
         <Room
           key={room.name}
           name={`${room.name}`}
           created_at={room.created_at}
           messageCount={room.message_count}
-          background_url={room.background_url}
-        />
-      ))}
-      {example.map((room) => (
-        <Room
-          key={room.name}
-          name={`${room.name}`}
-          created_at={room.created_at}
-          messageCount={Math.floor(Math.random() * 100)}
           background_url={room.background_url}
         />
       ))}
@@ -53,13 +44,13 @@ function Room({
 
   const styles = {
     bg: {
-      default: useColorModeValue("white", "gray.900"),
+      default: useColorModeValue("white", "black"),
       image: useColorModeValue(
         `linear-gradient(rgba(255, 255, 255, 0.6), rgba( 255, 255, 255, 0.6)), url(${background_url})`,
-        `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.2)), url(${background_url})`
+        `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${background_url})`
       ),
     },
-    border: useColorModeValue("gray.200", "gray.800"),
+    border: useColorModeValue("gray.200", "gray.900"),
     color: useColorModeValue("gray.800", "white"),
     hover: {
       bg: background_url
@@ -67,16 +58,16 @@ function Room({
             `linear-gradient(rgba(255, 255, 255, 0.4), rgba( 255, 255, 255, 0.4)), url(${background_url})`,
             `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.2)), url(${background_url})`
           )
-        : useColorModeValue("gray.100", "gray.800"),
+        : useColorModeValue("gray.100", "gray.900"),
       backgroundSize: "cover",
     },
     click: {
       bg: background_url
         ? useColorModeValue(
             `linear-gradient(rgba(255, 255, 255, 0.2), rgba( 255, 255, 255, 0.2)), url(${background_url})`,
-            `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.2)), url(${background_url})`
+            `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3)), url(${background_url})`
           )
-        : useColorModeValue("gray.200", "gray.700"),
+        : useColorModeValue("gray.200", "gray.800"),
 
       backgroundSize: "cover",
     },

@@ -6,8 +6,6 @@
  */
 
 import {
-  Avatar,
-  Box,
   Flex,
   Icon,
   IconButton,
@@ -19,7 +17,6 @@ import { BsFillMoonFill, BsFillSunFill } from "react-icons/bs";
 
 function Bottombar({ emoji, emojiBg }: { emoji: string; emojiBg: string }) {
   const styles = {
-    bg: useColorModeValue("white", "gray.900"),
     color: useColorModeValue("gray.800", "white"),
     border: useColorModeValue("gray.200", "gray.800"),
   };
@@ -32,8 +29,9 @@ function Bottombar({ emoji, emojiBg }: { emoji: string; emojiBg: string }) {
       borderColor={styles.border}
       justifyContent={"space-between"}
       zIndex={1}
-      bg={styles.bg}
       padding={2}
+      position={"static"}
+      bottom={0}
     >
       <EmojiAvatar emoji={emoji} bg={emojiBg} size={30} />
       <ThemeSwitcher />

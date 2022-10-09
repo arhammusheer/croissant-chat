@@ -26,7 +26,7 @@ import {
 import Rooms from "./Sidebar/components/Rooms";
 import Topbar from "./Sidebar/components/Topbar";
 import Bottombar from "./Sidebar/components/Bottombar";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Chatbox from "./Chatbox/Chatbox";
 import Introduction from "./Introduction";
 import { IoIosClose } from "react-icons/io";
@@ -150,7 +150,7 @@ const DesktopView = ({
         color={styles.chat.color}
         overflowY={"hidden"}
       >
-        {id && id !=="introduction" ? <Chatbox id={id} /> : <Introduction />}
+        {id && id !== "introduction" ? <Chatbox id={id} /> : <Introduction />}
       </GridItem>
     </Grid>
   );
@@ -201,9 +201,14 @@ const MobileView = ({
         </Flex>
       </Box>
       <Bottombar emoji={user.avatar.emoji} emojiBg={user.avatar.bg} />
-      <Drawer isOpen={isOpen} placement="bottom" onClose={onClose} size="full">
+      <Drawer
+        isOpen={isOpen}
+        placement={id === "introduction" ? "top" : "right"}
+        onClose={onClose}
+        size={id === "introduction" ? "full" : "xs"}
+      >
         <DrawerOverlay />
-        <DrawerContent bg={styles.base.bg}>
+        <DrawerContent bg={styles.base.bg} color={styles.chat.color}>
           <DrawerBody>
             <IconButton
               onClick={() => setId("")}

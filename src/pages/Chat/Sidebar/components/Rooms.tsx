@@ -11,7 +11,7 @@ import { IoIosShareAlt } from "react-icons/io";
 import distanceNormalize from "../../../../utils/distanceNormalize";
 import relativeTime from "../../../../utils/relativeTime";
 
-function Rooms() {
+function Rooms({ setId }: { setId: (id: string) => void }) {
   return (
     <Stack spacing={2} p={2} w={"full"} h={"full"} zIndex={0}>
       {example.map((room) => (
@@ -21,6 +21,7 @@ function Rooms() {
           created_at={room.created_at}
           messageCount={room.message_count}
           background_url={room.background_url}
+          onClick={() => setId(room.name)}
         />
       ))}
     </Stack>
@@ -33,12 +34,14 @@ function Room({
   messageCount = 0,
   distance = 10,
   background_url,
+  onClick,
 }: {
   name: string;
   created_at: string;
   distance?: number;
   messageCount?: number;
   background_url?: string;
+  onClick?: () => void;
 }) {
   const createdAt = new Date(created_at);
   const now = new Date();
@@ -97,6 +100,7 @@ function Room({
       transition={"all 0.1s ease-in-out"}
       _active={styles.click}
       userSelect={"none"}
+      onClick={onClick}
     >
       <Heading size={"md"}>{name}</Heading>
       <Text fontSize={"xs"}>

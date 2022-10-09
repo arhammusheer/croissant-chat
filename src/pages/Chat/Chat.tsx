@@ -7,14 +7,30 @@
 
 import logo from "../../assets/croissant.svg";
 
-import { Box, Grid, GridItem, Text, useColorModeValue } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerOverlay,
+  Grid,
+  GridItem,
+  Text,
+  useBreakpointValue,
+  useColorModeValue,
+  useDisclosure,
+} from "@chakra-ui/react";
 import Rooms from "./Sidebar/components/Rooms";
 import Topbar from "./Sidebar/components/Topbar";
 import Bottombar from "./Sidebar/components/Bottombar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Chatbox from "./Chatbox/Chatbox";
+import Introduction from "./Introduction";
 
 function Chat() {
+  const [activeId, setActiveId] = useState("");
+
   const [user, setUser] = useState({
     name: "croissant#3831",
     avatar: {
@@ -27,23 +43,70 @@ function Chat() {
     bg: useColorModeValue("white", "black"),
     color: useColorModeValue("gray.800", "white"),
     border: useColorModeValue("gray.200", "gray.900"),
-  };
+  } as const;
 
   const chatStyles = {
     bg: useColorModeValue("gray.50", "black"),
     color: useColorModeValue("gray.800", "white"),
-  };
+  } as const;
 
   const baseStyles = {
     bg: useColorModeValue("white", "black"),
+  } as const;
+
+  const isMobile = useBreakpointValue({
+    base: true,
+    sm: false,
+  });
+
+  const styles = {
+    base: baseStyles,
+    menu: menuStyles,
+    chat: chatStyles,
   };
 
+  if (isMobile) {
+    return (
+      <MobileView
+        user={user}
+        id={activeId}
+        setId={setActiveId}
+        styles={styles}
+      />
+    );
+  } else {
+    return (
+      <DesktopView
+        user={user}
+        id={activeId}
+        setId={setActiveId}
+        styles={styles}
+      />
+    );
+  }
+}
+
+const DesktopView = ({
+  user,
+  id,
+  setId,
+  styles,
+}: {
+  user: any;
+  id: string;
+  setId: any;
+  styles: {
+    base: any;
+    chat: any;
+    menu: any;
+  };
+}) => {
   return (
     <Grid
       h={"100vh"}
       w={"full"}
       templateColumns={"repeat(10, 1fr)"}
-      bg={baseStyles.bg}
+      bg={styles.base.bg}
     >
       <GridItem
         colSpan={{
@@ -51,15 +114,15 @@ function Chat() {
           sm: 4,
           md: 2,
         }}
-        bg={menuStyles.bg}
-        color={menuStyles.color}
+        bg={styles.menu.bg}
+        color={styles.menu.color}
         overflowY={"hidden"}
         borderRight={"1px"}
-        borderColor={menuStyles.border}
+        borderColor={styles.menu.border}
       >
         <Topbar logo={logo} title={"Croissant Chat"} />
         <Box overflowY={"scroll"} h={window.innerHeight - 100}>
-          <Rooms />
+          <Rooms setId={setId} />
         </Box>
         <Bottombar emoji={user.avatar.emoji} emojiBg={user.avatar.bg} />
       </GridItem>
@@ -69,13 +132,60 @@ function Chat() {
           sm: 6,
           md: 8,
         }}
-        bg={chatStyles.bg}
-        color={chatStyles.color}
+        bg={styles.chat.bg}
+        color={styles.chat.color}
       >
-        <Chatbox id={"test"} />
+        {id ? <Chatbox id={id} /> : <Introduction />}
       </GridItem>
     </Grid>
   );
-}
+};
+
+const MobileView = ({
+  user,
+  id,
+  setId,
+  styles,
+}: {
+  user: any;
+  id: string;
+  setId: (id: string) => void;
+  styles: {
+    base: any;
+    chat: any;
+    menu: any;
+  };
+}) => {
+  const { isOpen, onOpen, onClose } = useDisclosure({
+    defaultIsOpen: false,
+  });
+
+  useEffect(() => {
+    if (id) {
+      onOpen();
+    } else {
+      onClose();
+    }
+  }, [id]);
+
+  return (
+    <Box bg={styles.base.bg}>
+      <Topbar logo={logo} title={"Croissant Chat"} />
+      <Box overflowY={"scroll"} h={window.innerHeight - 100}>
+        <Rooms setId={setId} />
+      </Box>
+      <Bottombar emoji={user.avatar.emoji} emojiBg={user.avatar.bg} />
+      <Drawer isOpen={isOpen} placement="bottom" onClose={onClose} size="full">
+        <DrawerOverlay />
+        <DrawerContent bg={styles.base.bg}>
+          <DrawerBody>
+            <Button onClick={() => setId("")}>Back</Button>
+            <Chatbox id="Chatbox" />
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
+    </Box>
+  );
+};
 
 export default Chat;

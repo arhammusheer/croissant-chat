@@ -32,7 +32,16 @@ import Introduction from "./Introduction";
 import { IoIosClose } from "react-icons/io";
 
 function Chat() {
-  const [activeId, setActiveId] = useState("introduction");
+  const hasViewedIntroIn1Week = () => {
+    const lastViewed = localStorage.getItem("introLastViewed");
+    if (!lastViewed) return false;
+    return (
+      new Date().getTime() - parseInt(lastViewed) < 1000 * 60 * 60 * 24 * 7
+    );
+  };
+  const [activeId, setActiveId] = useState(
+    hasViewedIntroIn1Week() ? "" : "introduction"
+  );
 
   const [user, setUser] = useState({
     name: "croissant#3831",
@@ -182,6 +191,13 @@ const MobileView = ({
       onClose();
     }
   }, [id]);
+
+  useEffect(() => {
+    // intro last seen
+    if (id === "introduction") {
+      localStorage.setItem("introLastViewed", new Date().getTime().toString());
+    }
+  }, []);
 
   return (
     <Box bg={styles.base.bg}>

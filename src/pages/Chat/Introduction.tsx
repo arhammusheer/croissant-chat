@@ -34,6 +34,7 @@ function Introduction() {
     <Box
       w={"full"}
       h={"full"}
+      p={4}
       overflowY={"scroll"}
       overflowX={"hidden"}
       bg={styles.bg}

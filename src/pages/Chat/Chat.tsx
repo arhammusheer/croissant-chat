@@ -18,6 +18,7 @@ import {
   Grid,
   GridItem,
   IconButton,
+  Spacer,
   Text,
   useBreakpointValue,
   useColorModeValue,
@@ -30,19 +31,9 @@ import { useEffect, useRef, useState } from "react";
 import Chatbox from "./Chatbox/Chatbox";
 import Introduction from "./Introduction";
 import { IoIosClose } from "react-icons/io";
+import { Outlet } from "react-router-dom";
 
 function Chat() {
-  const hasViewedIntroIn1Week = () => {
-    const lastViewed = localStorage.getItem("introLastViewed");
-    if (!lastViewed) return false;
-    return (
-      new Date().getTime() - parseInt(lastViewed) < 1000 * 60 * 60 * 24 * 7
-    );
-  };
-  const [activeId, setActiveId] = useState(
-    hasViewedIntroIn1Week() ? "" : "introduction"
-  );
-
   const [user, setUser] = useState({
     name: "croissant#3831",
     avatar: {
@@ -66,47 +57,20 @@ function Chat() {
     bg: useColorModeValue("white", "black"),
   } as const;
 
-  const isMobile = useBreakpointValue({
-    base: true,
-    sm: false,
-  });
-
   const styles = {
     base: baseStyles,
     menu: menuStyles,
     chat: chatStyles,
   };
 
-  if (isMobile) {
-    return (
-      <MobileView
-        user={user}
-        id={activeId}
-        setId={setActiveId}
-        styles={styles}
-      />
-    );
-  } else {
-    return (
-      <DesktopView
-        user={user}
-        id={activeId}
-        setId={setActiveId}
-        styles={styles}
-      />
-    );
-  }
+  return <DesktopView user={user} styles={styles} />;
 }
 
 const DesktopView = ({
   user,
-  id,
-  setId,
   styles,
 }: {
   user: any;
-  id: string;
-  setId: any;
   styles: {
     base: any;
     chat: any;
@@ -133,20 +97,15 @@ const DesktopView = ({
         borderColor={styles.menu.border}
       >
         <Topbar logo={logo} title={"Croissant Chat"} />
-        <Box overflowY={"scroll"} h={window.innerHeight - 100}>
-          <Rooms setId={setId} />
-          <Flex
-            h={"100px"}
-            align={"center"}
-            justify={"center"}
-            py={8}
-            my={"50px"}
-            direction={"column"}
-          >
-            <Text fontSize={"xs"}>You have reached the end</Text>
-            <Text fontSize={"sm"}>Here is a croissant 🥐</Text>
-          </Flex>
+        <Box
+          overflowY={"scroll"}
+          h={{
+            base: "calc(100vh - 100px)",
+          }}
+        >
+          <Rooms />
         </Box>
+        <Spacer />
         <Bottombar emoji={user.avatar.emoji} emojiBg={user.avatar.bg} />
       </GridItem>
       <GridItem
@@ -159,89 +118,9 @@ const DesktopView = ({
         color={styles.chat.color}
         overflowY={"hidden"}
       >
-        {id && id !== "introduction" ? <Chatbox id={id} /> : <Introduction />}
+        <Outlet />
       </GridItem>
     </Grid>
-  );
-};
-
-const MobileView = ({
-  user,
-  id,
-  setId,
-  styles,
-}: {
-  user: any;
-  id: string;
-  setId: (id: string) => void;
-  styles: {
-    base: any;
-    chat: any;
-    menu: any;
-  };
-}) => {
-  const { isOpen, onOpen, onClose } = useDisclosure({
-    defaultIsOpen: true,
-  });
-
-  useEffect(() => {
-    if (id) {
-      onOpen();
-    } else {
-      onClose();
-    }
-  }, [id]);
-
-  useEffect(() => {
-    // intro last seen
-    if (id === "introduction") {
-      localStorage.setItem("introLastViewed", new Date().getTime().toString());
-    }
-  }, []);
-
-  return (
-    <Box bg={styles.base.bg}>
-      <Topbar logo={logo} title={"Croissant Chat"} />
-      <Box overflowY={"scroll"} h={window.innerHeight - 100}>
-        <Rooms setId={setId} />
-        <Flex
-          pt={"200px"}
-          align={"center"}
-          justify={"center"}
-          py={8}
-          my={"50px"}
-          direction={"column"}
-        >
-          <Text fontSize={"xs"}>You have reached the end</Text>
-          <Text fontSize={"sm"}>Here is a croissant 🥐</Text>
-        </Flex>
-      </Box>
-      <Bottombar emoji={user.avatar.emoji} emojiBg={user.avatar.bg} />
-      <Drawer
-        isOpen={isOpen}
-        placement={id === "introduction" ? "top" : "right"}
-        onClose={onClose}
-        size={id === "introduction" ? "xs" : "full"}
-      >
-        <DrawerOverlay />
-        <DrawerContent bg={styles.base.bg} color={styles.chat.color}>
-          <DrawerBody>
-            <IconButton
-              onClick={() => setId("")}
-              icon={<IoIosClose />}
-              aria-label="Close"
-              size={"sm"}
-              variant={"ghost"}
-            />
-            {id && id !== "introduction" ? (
-              <Chatbox id={id} />
-            ) : (
-              <Introduction />
-            )}
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
-    </Box>
   );
 };
 

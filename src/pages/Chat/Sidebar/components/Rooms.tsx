@@ -6,24 +6,55 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import { BsFillChatRightFill } from "react-icons/bs";
 import { IoIosShareAlt } from "react-icons/io";
+import { Link } from "react-router-dom";
+import { getRooms } from "../../../../services/fakeApi";
 import distanceNormalize from "../../../../utils/distanceNormalize";
 import relativeTime from "../../../../utils/relativeTime";
+import { motion, MotionProps } from "framer-motion";
 
-function Rooms({ setId }: { setId: (id: string) => void }) {
+function Rooms() {
+  const [rooms, setRooms] = useState<
+    {
+      id: string;
+      name: string;
+      created_at: string;
+      message_count?: number;
+      background_url?: string;
+    }[]
+  >([]);
+
+  useEffect(() => {
+    getRooms().then((res) => setRooms(res));
+  }, []);
+
+  const motionConfig: MotionProps = {
+    initial: { opacity: 0, y: 10 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: 20 },
+    whileHover: { scale: 1.01 },
+    whileTap: { scale: 0.99 },
+    transition: { duration: 0.1 },
+  };
+
   return (
     <Stack spacing={2} p={2} w={"full"} h={"full"} zIndex={0}>
-      {example.map((room) => (
-        <Room
-          key={room.name}
-          name={`${room.name}`}
-          created_at={room.created_at}
-          messageCount={room.message_count}
-          background_url={room.background_url}
-          onClick={() => setId(room.name)}
-        />
-      ))}
+      {rooms &&
+        rooms.map((room, index) => (
+          <Link to={`/chat/${room.id}`} key={room.id}>
+            <motion.div {...motionConfig}>
+              <Room
+                key={room.id}
+                name={`${room.name}`}
+                created_at={room.created_at}
+                messageCount={room.message_count}
+                background_url={room.background_url}
+              />
+            </motion.div>
+          </Link>
+        ))}
     </Stack>
   );
 }
@@ -118,40 +149,3 @@ function Room({
 }
 
 export default Rooms;
-
-const example = [
-  {
-    name: "This is Subbaswammy. AMA",
-    created_at: "2022-10-09T16:00:00.000Z",
-    message_count: 10,
-    background_url:
-      "https://cdn.discordapp.com/attachments/785885889988919366/1028723456029769879/unknown.png",
-  },
-  {
-    name: "Cow",
-    created_at: "2022-10-09T16:00:00.000Z",
-    background_url:
-      "https://images.unsplash.com/photo-1556997685-309989c1aa82?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1773&q=80",
-  },
-  {
-    name: "Some people just say the darnest things",
-    created_at: "2022-10-09T16:00:00.000Z",
-  },
-  {
-    name: "I'm not sure what to say",
-    created_at: "2022-10-09T16:00:00.000Z",
-  },
-  {
-    name: "What is an Emergency physician’s favorite cellular organelle?",
-    created_at: "2022-10-09T16:00:00.000Z",
-  },
-  {
-    name: "What do you call an Italian and African mosquito cross-breed?",
-    created_at: "2022-10-09T16:00:00.000Z",
-  },
-] as {
-  name: string;
-  created_at: string;
-  message_count?: number;
-  background_url?: string;
-}[];

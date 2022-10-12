@@ -8,6 +8,7 @@
  */
 
 import { Avatar, Flex, Heading, useColorModeValue } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 
 function Topbar({ logo, title }: { logo: string; title: string }) {
   const styles = {
@@ -26,7 +27,9 @@ function Topbar({ logo, title }: { logo: string; title: string }) {
       h={"50px"}
     >
       <Flex alignItems={"center"}>
-        <Avatar size={"sm"} src={logo} />
+        <Link to={"/chat"}>
+          <Avatar size={"sm"} src={logo} />
+        </Link>
         <Heading size={"sm"} ml={2}>
           {title}
         </Heading>

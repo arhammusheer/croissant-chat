@@ -9,10 +9,11 @@ import {
   Flex,
   Icon,
   IconButton,
+  Menu,
   Spacer,
   Text,
   useColorMode,
-  useColorModeValue,
+  useColorModeValue
 } from "@chakra-ui/react";
 import { BsFillMoonFill, BsFillSunFill } from "react-icons/bs";
 import StartNew from "./StartNew";
@@ -35,13 +36,19 @@ function Bottombar({ emoji, emojiBg }: { emoji: string; emojiBg: string }) {
       position={"static"}
       bottom={0}
     >
-      <EmojiAvatar emoji={emoji} bg={emojiBg} size={30} />
+      <AccountMenu>
+        <EmojiAvatar emoji={emoji} bg={emojiBg} size={30} />
+      </AccountMenu>
       <Spacer />
       <StartNew />
       <ThemeSwitcher />
     </Flex>
   );
 }
+
+const AccountMenu = ({ children }: { children: React.ReactNode }) => {
+  return <Menu>{children}</Menu>;
+};
 
 const EmojiAvatar = ({
   size,

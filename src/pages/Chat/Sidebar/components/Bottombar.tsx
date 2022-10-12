@@ -10,12 +10,20 @@ import {
   Icon,
   IconButton,
   Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Spacer,
   Text,
   useColorMode,
-  useColorModeValue
+  useColorModeValue,
 } from "@chakra-ui/react";
-import { BsFillMoonFill, BsFillSunFill } from "react-icons/bs";
+import {
+  BsFillMoonFill,
+  BsFillPersonFill,
+  BsFillSunFill,
+} from "react-icons/bs";
+import { IoMdLogOut, IoMdSettings } from "react-icons/io";
 import StartNew from "./StartNew";
 
 function Bottombar({ emoji, emojiBg }: { emoji: string; emojiBg: string }) {
@@ -47,7 +55,27 @@ function Bottombar({ emoji, emojiBg }: { emoji: string; emojiBg: string }) {
 }
 
 const AccountMenu = ({ children }: { children: React.ReactNode }) => {
-  return <Menu>{children}</Menu>;
+  const styles = {
+    bg: useColorModeValue("gray.50", "black"),
+    color: useColorModeValue("gray.800", "white"),
+    border: useColorModeValue("gray.200", "gray.800"),
+  };
+
+  return (
+    <Menu isLazy>
+      <MenuButton
+        as={IconButton}
+        aria-label="Options"
+        icon={children}
+        borderRadius="full"
+      />
+      <MenuList bg={styles.bg} color={styles.color} borderColor={styles.border}>
+        <MenuItem icon={<Icon as={BsFillPersonFill} />}>Account</MenuItem>
+        <MenuItem icon={<Icon as={IoMdSettings} />}>Settings</MenuItem>
+        <MenuItem icon={<Icon as={IoMdLogOut} />}>Logout</MenuItem>
+      </MenuList>
+    </Menu>
+  );
 };
 
 const EmojiAvatar = ({

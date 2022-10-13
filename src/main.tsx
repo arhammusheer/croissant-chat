@@ -10,6 +10,10 @@ import Landing from "./pages/Landing";
 import { getRoom } from "./services/fakeApi";
 import theme from "./utils/theme";
 
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import firebaseConfig from "./configs/firebase.config";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -43,3 +47,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     </ChakraProvider>
   </React.StrictMode>
 );
+
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);

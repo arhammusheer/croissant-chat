@@ -56,5 +56,19 @@ export const createRoom = async ({}) => {
   return;
 };
 
+export const getUser = async () => {
+  await timeout(1000);
+
+  return undefined;
+
+  return {
+    name: "croissant#3831",
+    avatar: {
+      emoji: "🍩",
+      bg: "yellow.400",
+    },
+  };``
+};
+
 const timeout = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));

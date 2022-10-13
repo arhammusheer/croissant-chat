@@ -1,27 +1,47 @@
 import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  redirect,
+  RouterProvider,
+} from "react-router-dom";
 import "./index.css";
 import Chat from "./pages/Chat/Chat";
 import Chatbox from "./pages/Chat/Chatbox/Chatbox";
 import Introduction from "./pages/Chat/Introduction";
 import Landing from "./pages/Landing";
-import { getRoom } from "./services/fakeApi";
+import { getRoom, getUser } from "./services/fakeApi";
 import theme from "./utils/theme";
 
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import firebaseConfig from "./configs/firebase.config";
+import Login from "./pages/auth/Login";
+import _404 from "./pages/errors/_404";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Landing />,
+    errorElement: <_404 />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
   },
   {
     path: "/chat",
     element: <Chat />,
+    loader: async () => {
+      const user = await getUser();
+
+      if (!user) {
+        return redirect("/login");
+      }
+
+      return user;
+    },
     children: [
       {
         path: "",

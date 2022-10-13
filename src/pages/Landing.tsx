@@ -5,12 +5,24 @@
  * @access public
  */
 
+import { Button, Flex, Heading } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
+
 function Landing() {
-	return (
-		<div>
-			<h1>Landing</h1>
-		</div>
-	);
+  return (
+    <Flex
+      h={"100vh"}
+      w={"full"}
+      justifyContent={"center"}
+      alignItems={"center"}
+      flexDirection={"column"}
+    >
+      <Heading>🥐 Croissant Chat 🥐</Heading>
+      <Button as={Link} to={"/login"}>
+        Login
+      </Button>
+    </Flex>
+  );
 }
 
 export default Landing;

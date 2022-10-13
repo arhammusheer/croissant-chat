@@ -9,38 +9,19 @@ import logo from "../../assets/croissant.svg";
 
 import {
   Box,
-  Button,
-  Drawer,
-  DrawerBody,
-  DrawerContent,
-  DrawerOverlay,
-  Flex,
   Grid,
   GridItem,
-  IconButton,
   Spacer,
-  Text,
-  useBreakpointValue,
   useColorModeValue,
-  useDisclosure,
 } from "@chakra-ui/react";
+import { useState } from "react";
+import { Outlet, useLoaderData } from "react-router-dom";
+import Bottombar from "./Sidebar/components/Bottombar";
 import Rooms from "./Sidebar/components/Rooms";
 import Topbar from "./Sidebar/components/Topbar";
-import Bottombar from "./Sidebar/components/Bottombar";
-import { useEffect, useRef, useState } from "react";
-import Chatbox from "./Chatbox/Chatbox";
-import Introduction from "./Introduction";
-import { IoIosClose } from "react-icons/io";
-import { Outlet } from "react-router-dom";
 
 function Chat() {
-  const [user, setUser] = useState({
-    name: "croissant#3831",
-    avatar: {
-      emoji: "🍩",
-      bg: "yellow.400",
-    },
-  });
+  const user = useLoaderData();
 
   const menuStyles = {
     bg: useColorModeValue("white", "black"),

@@ -59,7 +59,7 @@ export const createRoom = async ({}) => {
 export const getUser = async () => {
   await timeout(1000);
 
-  return undefined;
+  // return undefined;
 
   return {
     name: "croissant#3831",
@@ -67,7 +67,7 @@ export const getUser = async () => {
       emoji: "🍩",
       bg: "yellow.400",
     },
-  };``
+  };
 };
 
 const timeout = (ms: number) =>

@@ -14,7 +14,6 @@ import {
   Spacer,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { useState } from "react";
 import { Outlet, useLoaderData } from "react-router-dom";
 import Bottombar from "./Sidebar/components/Bottombar";
 import Rooms from "./Sidebar/components/Rooms";

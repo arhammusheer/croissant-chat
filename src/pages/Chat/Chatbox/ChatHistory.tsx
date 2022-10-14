@@ -77,10 +77,11 @@ function Message({
   } as const;
 
   return (
-    <Flex
+    <Stack
       direction={"row"}
       align={"center"}
       py={1}
+      w={"full"}
       bg={styles.bg}
       _hover={{
         bg: styles.hover.bg,
@@ -88,17 +89,19 @@ function Message({
       onMouseEnter={() => setIsHovering(true)}
       onMouseLeave={() => setIsHovering(false)}
     >
-      <Flex
-        bg={avatar.bg}
-        w={"30px"}
-        h={"30px"}
-        m={2}
-        borderRadius={"lg"}
-        align={"center"}
-        justify={"center"}
-      >
-        {avatar.emoji}
-      </Flex>
+      <Box>
+        <Flex
+          bg={avatar.bg}
+          w={"30px"}
+          h={"30px"}
+          m={2}
+          borderRadius={"lg"}
+          align={"center"}
+          justify={"center"}
+        >
+          {avatar.emoji}
+        </Flex>
+      </Box>
       <Flex direction={"column"} w={"full"} px={1} color={styles.color}>
         <Flex direction={"row"} w={"full"}>
           <Text fontSize={"md"}>{content}</Text>
@@ -125,7 +128,7 @@ function Message({
           </ButtonGroup>
         )}
       </AnimatePresence>
-    </Flex>
+    </Stack>
   );
 }
 

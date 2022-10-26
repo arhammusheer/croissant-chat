@@ -14,17 +14,8 @@ import Landing from "./pages/Landing";
 import { getRoom, getUser } from "./services/fakeApi";
 import theme from "./utils/theme";
 
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import firebaseConfig from "./configs/firebase.config";
 import Login from "./pages/auth/Login";
 import _404 from "./pages/errors/_404";
-import { getAuth } from "firebase/auth";
-
-export const firebaseApp = initializeApp(firebaseConfig);
-export const firebaseAnalytics = getAnalytics(firebaseApp);
-export const auth = getAuth(firebaseApp);
-auth.useDeviceLanguage();
 
 const router = createBrowserRouter([
   {

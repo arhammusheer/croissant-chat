@@ -15,15 +15,12 @@ import {
   Input,
   Stack,
   Text,
-  useColorModeValue
+  useColorModeValue,
 } from "@chakra-ui/react";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useState } from "react";
 import { BsApple } from "react-icons/bs";
 import { FcGoogle } from "react-icons/fc";
 import logo from "../../assets/croissant.svg";
-import googleProvider from "../../firebase/auth/providers/google";
-import { auth } from "../../main";
 
 function Login() {
   return (
@@ -85,21 +82,6 @@ const LoginWithGoogle = () => {
     },
   };
 
-  const onclick = async () => {
-    signInWithPopup(auth, googleProvider)
-      .then((result) => {
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential?.accessToken;
-        const user = result.user;
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        const email = error.email;
-        const credential = GoogleAuthProvider.credentialFromError(error);
-      });
-  };
-
   return (
     <Button
       w={"full"}
@@ -107,7 +89,6 @@ const LoginWithGoogle = () => {
       borderColor={styles.button.border}
       colorScheme={"gray"}
       leftIcon={<FcGoogle />}
-      onClick={onclick}
     >
       Continue with Google
     </Button>

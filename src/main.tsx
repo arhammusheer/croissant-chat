@@ -14,7 +14,7 @@ import Landing from "./pages/Landing";
 import { getRoom, getUser } from "./services/fakeApi";
 import theme from "./utils/theme";
 
-import Login from "./pages/auth/Login";
+import LoginWithPassword from "./pages/auth/LoginWithPassword";
 import _404 from "./pages/errors/_404";
 
 const router = createBrowserRouter([
@@ -25,7 +25,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <Login />,
+    element: <LoginWithPassword />,
   },
   {
     path: "/chat",

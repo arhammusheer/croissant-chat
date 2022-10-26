@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 import { BsFillChatRightFill } from "react-icons/bs";
 import { IoIosShareAlt } from "react-icons/io";
 import { Link } from "react-router-dom";
-import { getRooms } from "../../../../services/fakeApi";
 import distanceNormalize from "../../../../utils/distanceNormalize";
 import relativeTime from "../../../../utils/relativeTime";
 import { motion, MotionProps } from "framer-motion";
@@ -27,7 +26,7 @@ function Rooms() {
   >([]);
 
   useEffect(() => {
-    getRooms().then((res) => setRooms(res));
+    // getRooms().then((res) => setRooms(res));
   }, []);
 
   const motionConfig: MotionProps = {

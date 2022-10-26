@@ -24,7 +24,6 @@ import {
 import { useState } from "react";
 import { BsPlusLg } from "react-icons/bs";
 import { IoMdClose } from "react-icons/io";
-import { createRoom } from "../../../../services/fakeApi";
 
 function StartNew() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -103,17 +102,17 @@ const StartNewChatForm = ({ onClose }: { onClose: () => void }) => {
       duration: 1000,
       isClosable: true,
     });
-    createRoom(value)
-      .then(() => setLoading(false))
-      .then(onClose)
-      .then(() =>
-        toast({
-          title: "Chat created",
-          status: "success",
-          isClosable: true,
-          duration: 2000,
-        })
-      );
+    // createRoom(value)
+    //   .then(() => setLoading(false))
+    //   .then(onClose)
+    //   .then(() =>
+    //     toast({
+    //       title: "Chat created",
+    //       status: "success",
+    //       isClosable: true,
+    //       duration: 2000,
+    //     })
+    //   );
   };
 
   return (

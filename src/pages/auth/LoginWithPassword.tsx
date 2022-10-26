@@ -1,4 +1,8 @@
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
   Box,
   Button,
   Flex,
@@ -8,9 +12,10 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { login_emailpassword } from "../../apis/auth";
 import logo from "../../assets/croissant.svg";
+import { GlobalContext } from "../../main";
 
 function LoginWithPassword() {
   return (
@@ -44,17 +49,26 @@ const Logo = () => (
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const gctx = useContext(GlobalContext);
+
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    await login_emailpassword(email, password)
-      .then(() => setLoading(false))
+
+    login_emailpassword(email, password)
+      .then((data) => {
+        gctx.setUser(data.user);
+        gctx.setToken(data.token);
+      })
       .catch((e) => {
         console.log(e);
-        setLoading(false);
-      });
+        setError(e.response ? e.response.data.message : e.message);
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -67,6 +81,7 @@ const LoginForm = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           type="email"
+          required
         />
         <Input
           w={"full"}
@@ -75,10 +90,19 @@ const LoginForm = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           type="password"
+          required
         />
-        <Button type={"submit"} colorScheme={"orange"}>
+        <Button type={"submit"} colorScheme={"orange"} isLoading={loading}>
           Login
         </Button>
+        <Box w={"full"} mt={10} />
+        {error && (
+          <Alert status="error" borderRadius={"md"} variant={"subtle"}>
+            <AlertIcon boxSize="30px" />
+            <AlertTitle mr={2}>Error!</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
       </Stack>
     </form>
   );

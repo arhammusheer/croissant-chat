@@ -6,28 +6,27 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { motion, MotionProps } from "framer-motion";
+import { useEffect } from "react";
 import { BsFillChatRightFill } from "react-icons/bs";
 import { IoIosShareAlt } from "react-icons/io";
 import { Link } from "react-router-dom";
+import useGeoLocation from "../../../../hooks/useGeoLocation";
+import useRooms from "../../../../hooks/useRooms";
 import distanceNormalize from "../../../../utils/distanceNormalize";
 import relativeTime from "../../../../utils/relativeTime";
-import { motion, MotionProps } from "framer-motion";
 
 function Rooms() {
-  const [rooms, setRooms] = useState<
-    {
-      id: string;
-      name: string;
-      created_at: string;
-      message_count?: number;
-      background_url?: string;
-    }[]
-  >([]);
+  const { refresh, rooms } = useRooms();
+  const geo = useGeoLocation();
 
   useEffect(() => {
-    // getRooms().then((res) => setRooms(res));
+    geo.refresh();
   }, []);
+
+  useEffect(() => {
+    refresh(geo.lat, geo.lng);
+  }, [geo.lat, geo.lng]);
 
   const motionConfig: MotionProps = {
     initial: { opacity: 0, y: 10 },
@@ -41,15 +40,14 @@ function Rooms() {
   return (
     <Stack spacing={2} p={2} w={"full"} h={"full"} zIndex={0}>
       {rooms &&
-        rooms.map((room, index) => (
+        rooms.map((room) => (
           <Link to={`/chat/${room.id}`} key={room.id}>
             <motion.div {...motionConfig}>
               <Room
                 key={room.id}
                 name={`${room.name}`}
-                created_at={room.created_at}
-                messageCount={room.message_count}
-                background_url={room.background_url}
+                created_at={room.createdAt}
+                distance={room.distance}
               />
             </motion.div>
           </Link>
@@ -62,7 +60,7 @@ function Room({
   name,
   created_at,
   messageCount = 0,
-  distance = 10,
+  distance = 1000,
   background_url,
   onClick,
 }: {
@@ -77,7 +75,7 @@ function Room({
   const now = new Date();
 
   const relative = relativeTime(createdAt, now);
-  const normalizedDistance = distanceNormalize(distance);
+  const normalizedDistance = distanceNormalize(Math.floor(distance / 1000));
 
   const styles = {
     bg: {

@@ -13,6 +13,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { login_emailpassword } from "../../apis/auth";
 import logo from "../../assets/croissant.svg";
 import { GlobalContext } from "../../main";
@@ -53,6 +54,8 @@ const LoginForm = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const navigate = useNavigate();
+
   const gctx = useContext(GlobalContext);
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -62,10 +65,9 @@ const LoginForm = () => {
     login_emailpassword(email, password)
       .then((data) => {
         gctx.setUser(data.user);
-        gctx.setToken(data.token);
+        navigate("/chat");
       })
       .catch((e) => {
-        console.log(e);
         setError(e.response ? e.response.data.message : e.message);
       })
       .finally(() => setLoading(false));

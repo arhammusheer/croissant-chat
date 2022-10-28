@@ -1,8 +1,9 @@
 import { Flex, Text, Tooltip, useColorModeValue } from "@chakra-ui/react";
-import { useLoaderData } from "react-router-dom";
+import { useContext } from "react";
+import { GlobalContext } from "../../../main";
 
 function Titlebox() {
-  const metadata = useLoaderData() as any;
+  const gctx = useContext(GlobalContext);
 
   const styles = {
     bg: useColorModeValue("white", "black"),
@@ -20,7 +21,7 @@ function Titlebox() {
       bg={styles.bg}
       alignItems={"center"}
     >
-      <Title text={metadata.name} />
+      <Title text={gctx.user.name} />
     </Flex>
   );
 }

@@ -4,7 +4,7 @@ Hi croissant. Welcome to the chat. Here you'll find other croissants in a 5 mile
 
 This took a while to make so I hope you enjoy it.
 
-![Croissant Gif](https://media.tenor.com/3mHoPd3Wac4AAAAC/tysondang-thedanggang.gif)
+<!-- ![Croissant Gif](https://media.tenor.com/3mHoPd3Wac4AAAAC/tysondang-thedanggang.gif) -->
 
 ## What is Croissant Chat?
 - 🚗 You'll see chats open in a 5 mile radius

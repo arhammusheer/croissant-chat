@@ -14,13 +14,26 @@ import {
   Spacer,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { Outlet, useLoaderData } from "react-router-dom";
+import { useContext, useEffect } from "react";
+import { Outlet } from "react-router-dom";
+import { GlobalContext } from "../../main";
 import Bottombar from "./Sidebar/components/Bottombar";
 import Rooms from "./Sidebar/components/Rooms";
 import Topbar from "./Sidebar/components/Topbar";
+import { getUser } from "../../apis/user";
 
 function Chat() {
-  const user = useLoaderData();
+  const gctx = useContext(GlobalContext);
+
+  const { user } = gctx;
+
+  useEffect(() => {
+    if (!user) {
+      getUser().then((data) => {
+        gctx.setUser(data.user);
+      });
+    }
+  }, [user]);
 
   const menuStyles = {
     bg: useColorModeValue("white", "black"),
@@ -42,7 +55,9 @@ function Chat() {
     menu: menuStyles,
     chat: chatStyles,
   };
-
+  if (!user) {
+    return <>LOADING</>;
+  }
   return <DesktopView user={user} styles={styles} />;
 }
 
@@ -86,7 +101,7 @@ const DesktopView = ({
           <Rooms />
         </Box>
         <Spacer />
-        <Bottombar emoji={user.avatar.emoji} emojiBg={user.avatar.bg} />
+        <Bottombar emoji={user.emoji} emojiBg={user.background} />
       </GridItem>
       <GridItem
         colSpan={{

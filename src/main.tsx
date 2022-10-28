@@ -1,5 +1,5 @@
 import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
 import {
   createBrowserRouter,
@@ -13,20 +13,41 @@ import Introduction from "./pages/Chat/Introduction";
 import Landing from "./pages/Landing";
 import theme from "./utils/theme";
 
+import { getUser } from "./apis/user";
 import LoginWithPassword from "./pages/auth/LoginWithPassword";
 import _404 from "./pages/errors/_404";
-import { getUser } from "./apis/user";
+import useGeoLocation from "./hooks/useGeoLocation";
 
 export const GlobalContext = React.createContext({
   user: null,
-  token: "",
   setUser: (user: any) => {},
-  setToken: (token: any) => {},
+
+  rooms: [],
+  setRooms: (rooms: any[]) => {},
+
+  location: {
+    lat: 0,
+    lng: 0,
+  },
+
+  setLocation: (location: { lat: number; lng: number }) => {},
 } as {
   user: any;
-  token: string;
   setUser: (user: any) => void;
-  setToken: (token: any) => void;
+
+  rooms: {
+    id: string;
+    name: string;
+    distance: number;
+    createdAt: string;
+  }[];
+  setRooms: (rooms: any[]) => void;
+
+  location: {
+    lat: number;
+    lng: number;
+  };
+  setLocation: (location: { lat: number; lng: number }) => void;
 });
 
 const router = createBrowserRouter([
@@ -43,13 +64,12 @@ const router = createBrowserRouter([
     path: "/chat",
     element: <Chat />,
     loader: async () => {
-      const user = await getUser();
-
-      if (!user) {
+      try {
+        const data = await getUser();
+        return data.user;
+      } catch (e) {
         return redirect("/login");
       }
-
-      return user;
     },
     children: [
       {
@@ -70,11 +90,29 @@ const router = createBrowserRouter([
 
 const App = () => {
   const [user, setUser] = React.useState<any>(null);
-  const [token, setToken] = React.useState("");
+  const [rooms, setRooms] = React.useState<any>([]);
+  const [location, setLocation] = React.useState({
+    lat: 0,
+    lng: 0,
+  });
+
+  useEffect(() => {
+    getUser().then((data) => {
+      setUser(data.user);
+    });
+
+    const localLocation = localStorage.getItem("location");
+    if (localLocation) {
+      const { lat, lng } = JSON.parse(localLocation);
+      setLocation({ lat, lng });
+    }
+  }, []);
 
   return (
-    <GlobalContext.Provider value={{ user, token, setUser, setToken }}>
-      <RouterProvider router={router} />;
+    <GlobalContext.Provider
+      value={{ user, setUser, rooms, setRooms, location, setLocation }}
+    >
+      <RouterProvider router={router} />
     </GlobalContext.Provider>
   );
 };

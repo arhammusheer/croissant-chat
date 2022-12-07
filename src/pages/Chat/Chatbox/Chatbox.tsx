@@ -25,12 +25,13 @@ function Chatbox() {
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    if (!id) return;
-    dispatch(
-      roomActions.loadMessages({
-        roomId: id,
-      })
-    );
+    if (id) {
+      dispatch(
+        roomActions.loadMessages({
+          roomId: id,
+        })
+      );
+    }
   }, [dispatch, id]);
 
   return (

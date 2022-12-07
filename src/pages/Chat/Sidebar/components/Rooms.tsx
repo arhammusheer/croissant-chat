@@ -13,7 +13,7 @@ import { useEffect } from "react";
 import { BsFillChatRightFill } from "react-icons/bs";
 import { IoIosShareAlt } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { roomActions } from "../../../../redux/slices/rooms.slice";
 import { AppDispatch, RootState } from "../../../../redux/store";
 import distanceNormalize from "../../../../utils/distanceNormalize";
@@ -65,6 +65,7 @@ function Rooms() {
               <Room
                 key={room.metadata?.id}
                 name={`${room.metadata?.name}`}
+                roomId={room.metadata?.id}
                 created_at={new Date(
                   room.metadata?.createdAt as string
                 ).toString()}
@@ -90,12 +91,14 @@ function Rooms() {
 function Room({
   name,
   created_at,
+  roomId,
   messageCount = 0,
   distance = 1000,
   background_url,
   onClick,
 }: {
   name: string;
+  roomId: string;
   created_at: string;
   distance?: number;
   messageCount?: number;
@@ -107,6 +110,21 @@ function Room({
 
   const relative = relativeTime(createdAt, now);
   const normalizedDistance = distanceNormalize(Math.floor(distance / 1000));
+
+  const { id } = useParams<{ id: string }>();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const onClickHandler = () => {
+    if (roomId !== id) {
+      onClick && onClick();
+    } else {
+      dispatch(
+        roomActions.loadMessages({
+          roomId,
+        })
+      );
+    }
+  };
 
   const styles = {
     bg: {
@@ -159,7 +177,7 @@ function Room({
       transition={"all 0.1s ease-in-out"}
       _active={styles.click}
       userSelect={"none"}
-      onClick={onClick}
+      onClick={onClickHandler}
     >
       <Heading size={"md"}>{name}</Heading>
       <Text fontSize={"xs"}>

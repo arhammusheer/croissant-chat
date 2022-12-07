@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { API } from "../../utils/defaults";
 
 interface LocationState {
   coordinates: {
@@ -30,6 +31,15 @@ const updateLocation = createAsyncThunk<LocationState>(
     return new Promise((resolve, reject) => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          if (
+            position.coords.latitude !== 0 &&
+            position.coords.longitude !== 0
+          ) {
+            sendLocationLog({
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+            });
+          }
           resolve({
             coordinates: {
               latitude: position.coords.latitude,
@@ -48,6 +58,30 @@ const updateLocation = createAsyncThunk<LocationState>(
     });
   }
 );
+
+const sendLocationLog = async ({
+  latitude,
+  longitude,
+}: {
+  latitude: number;
+  longitude: number;
+}) => {
+  const response = await fetch(`${API}/user/locations`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({
+      latitude,
+      longitude,
+    }),
+  });
+
+  const data = await response.json();
+
+  return data;
+};
 
 const locationSlice = createSlice({
   name: "location",

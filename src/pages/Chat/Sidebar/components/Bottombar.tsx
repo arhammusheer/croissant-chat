@@ -24,6 +24,9 @@ import {
   BsFillSunFill,
 } from "react-icons/bs";
 import { IoMdLogOut, IoMdSettings } from "react-icons/io";
+import { useDispatch } from "react-redux";
+import { userActions } from "../../../../redux/slices/user.slice";
+import { AppDispatch } from "../../../../redux/store";
 import StartNew from "./StartNew";
 
 function Bottombar({ emoji, emojiBg }: { emoji: string; emojiBg: string }) {
@@ -62,6 +65,12 @@ const AccountMenu = ({ children }: { children: React.ReactNode }) => {
     border: useColorModeValue("gray.200", "gray.800"),
   };
 
+  const dispatch = useDispatch<AppDispatch>();
+
+  const changeEmoji = () => {
+    dispatch(userActions.randomizeEmoji());
+  };
+
   return (
     <Menu isLazy>
       <MenuButton
@@ -71,6 +80,9 @@ const AccountMenu = ({ children }: { children: React.ReactNode }) => {
         borderRadius="full"
       />
       <MenuList bg={styles.bg} color={styles.color} borderColor={styles.border}>
+        <MenuItem icon={<Icon as={BsFillMoonFill} />} onClick={changeEmoji}>
+          Change Emoji
+        </MenuItem>
         <MenuItem icon={<Icon as={BsFillPersonFill} />}>Account</MenuItem>
         <MenuItem icon={<Icon as={IoMdSettings} />}>Settings</MenuItem>
         <MenuItem icon={<Icon as={IoMdLogOut} />}>Logout</MenuItem>

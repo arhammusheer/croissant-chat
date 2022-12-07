@@ -23,6 +23,9 @@ import {
 import { useState } from "react";
 import { BsPlusLg } from "react-icons/bs";
 import { IoMdClose } from "react-icons/io";
+import { useDispatch, useSelector } from "react-redux";
+import { roomActions } from "../../../../redux/slices/rooms.slice";
+import { AppDispatch, RootState } from "../../../../redux/store";
 
 function StartNew() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -86,7 +89,11 @@ const StartNewModal = ({
 
 const StartNewChatForm = ({ onClose }: { onClose: () => void }) => {
   const [value, setValue] = useState("");
-  const [loading, setLoading] = useState(false);
+
+  const rooms = useSelector((state: RootState) => state.rooms);
+  const location = useSelector((state: RootState) => state.location);
+
+  const dispatch = useDispatch<AppDispatch>();
 
   const toast = useToast({
     position: "bottom-right",
@@ -94,12 +101,18 @@ const StartNewChatForm = ({ onClose }: { onClose: () => void }) => {
 
   const createNewChat = () => {
     console.log("Create new chat with", value);
-    toast({
-      title: `Creating new chat: ${value}`,
-      status: "info",
-      duration: 1000,
-      isClosable: true,
-    });
+
+    if (value.length > 0) {
+      dispatch(
+        roomActions.createRoom({
+          name: value,
+          latitude: location.coordinates.latitude,
+          longitude: location.coordinates.longitude,
+        })
+      );
+      setValue("");
+      onClose();
+    }
   };
 
   return (
@@ -109,12 +122,17 @@ const StartNewChatForm = ({ onClose }: { onClose: () => void }) => {
         placeholder={"Your topic..."}
         onChange={(e) => setValue(e.target.value)}
         borderRightRadius={"0"}
+        onKeyPress={(e) => {
+          if (e.key === "Enter") {
+            createNewChat();
+          }
+        }}
       />
       <Button
         colorScheme={"blue"}
         borderLeftRadius={"0"}
         onClick={createNewChat}
-        isLoading={loading}
+        isLoading={rooms.isCreating}
       >
         Create
       </Button>

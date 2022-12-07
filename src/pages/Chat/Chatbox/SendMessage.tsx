@@ -65,6 +65,7 @@ function ChatInput() {
             send();
           }
         }}
+        autoFocus
       />
       <InputRightElement p={1}>
         <IconButton

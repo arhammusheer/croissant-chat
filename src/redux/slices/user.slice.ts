@@ -15,6 +15,8 @@ interface User {
 
   createdAt: Date;
   updatedAt: Date;
+
+  token: string;
 }
 
 const login = createAsyncThunk<User, LoginParams>(
@@ -35,7 +37,10 @@ const login = createAsyncThunk<User, LoginParams>(
 
     const data = await response.json();
 
-    return data.data.user;
+    return {
+      ...data.data.user,
+      token: data.data.token,
+    }
   }
 );
 
@@ -44,6 +49,27 @@ const getProfile = createAsyncThunk<User>(
   async (anything, { rejectWithValue }) => {
     const response = await fetch(`${API}/user/profile`, {
       method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+
+    if (response.status === 401) {
+      rejectWithValue("Unauthorized access");
+    }
+
+    const data = await response.json();
+
+    return data.data.user;
+  }
+);
+
+const randomizeEmoji = createAsyncThunk<User>(
+  "user/randomizeEmoji",
+  async (anything, { rejectWithValue }) => {
+    const response = await fetch(`${API}/user/randomize-emoji`, {
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
@@ -111,12 +137,18 @@ const userSlice = createSlice({
       state.loading = false;
       state.isLoggedIn = false;
     });
+
+    // Randomize Emoji
+    builder.addCase(randomizeEmoji.fulfilled, (state, action) => {
+      state.profile = action.payload;
+    });
   },
 });
 
 export const userActions = {
   login,
   getProfile,
+  randomizeEmoji,
 };
 
 export default userSlice.reducer;

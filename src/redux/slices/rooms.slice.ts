@@ -64,7 +64,9 @@ const createRoom = createAsyncThunk<Room, RoomForm>(
       }),
     });
 
-    const room = await response.json();
+    const data = await response.json();
+
+    const room = data.data.room;
 
     return room;
   }
@@ -140,7 +142,17 @@ const sendMessage = createAsyncThunk<
 const roomsSlice = createSlice({
   name: "rooms",
   initialState,
-  reducers: {},
+  reducers: {
+    addMessage(state, action) {
+      const room = state.rooms.find(
+        (room) => room.metadata.id === action.payload.roomId
+      );
+
+      if (room) {
+        room.messages.push(action.payload);
+      }
+    },
+  },
   extraReducers: (builder) => {
     // Create room
     builder.addCase(createRoom.fulfilled, (state, action) => {
@@ -150,6 +162,10 @@ const roomsSlice = createSlice({
         messages: [],
         isLoading: false,
       });
+
+      state.rooms.sort((a, b) =>
+        b.metadata.createdAt.localeCompare(a.metadata.createdAt)
+      );
     });
 
     builder.addCase(createRoom.pending, (state) => {
@@ -170,6 +186,10 @@ const roomsSlice = createSlice({
         messages: [],
         isLoading: false,
       }));
+
+      state.rooms.sort((a, b) =>
+        b.metadata.createdAt.localeCompare(a.metadata.createdAt)
+      );
     });
 
     builder.addCase(fetchRooms.pending, (state) => {

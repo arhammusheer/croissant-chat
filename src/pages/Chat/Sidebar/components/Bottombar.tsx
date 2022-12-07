@@ -18,16 +18,12 @@ import {
   useColorMode,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { useContext } from "react";
 import {
-  BsEmojiLaughing,
   BsFillMoonFill,
   BsFillPersonFill,
   BsFillSunFill,
 } from "react-icons/bs";
 import { IoMdLogOut, IoMdSettings } from "react-icons/io";
-import { getUser, randomizeEmoji } from "../../../../apis/user";
-import { GlobalContext } from "../../../../main";
 import StartNew from "./StartNew";
 
 function Bottombar({ emoji, emojiBg }: { emoji: string; emojiBg: string }) {
@@ -66,14 +62,6 @@ const AccountMenu = ({ children }: { children: React.ReactNode }) => {
     border: useColorModeValue("gray.200", "gray.800"),
   };
 
-  const gctx = useContext(GlobalContext);
-
-  const onRandomEmoji = async () => {
-    await randomizeEmoji();
-    const data = await getUser();
-    gctx.setUser(data.user);
-  };
-
   return (
     <Menu isLazy>
       <MenuButton
@@ -83,9 +71,6 @@ const AccountMenu = ({ children }: { children: React.ReactNode }) => {
         borderRadius="full"
       />
       <MenuList bg={styles.bg} color={styles.color} borderColor={styles.border}>
-        <MenuItem icon={<Icon as={BsEmojiLaughing} />} onClick={onRandomEmoji}>
-          Random Emoji
-        </MenuItem>
         <MenuItem icon={<Icon as={BsFillPersonFill} />}>Account</MenuItem>
         <MenuItem icon={<Icon as={IoMdSettings} />}>Settings</MenuItem>
         <MenuItem icon={<Icon as={IoMdLogOut} />}>Logout</MenuItem>

@@ -14,26 +14,15 @@ import {
   Spacer,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { useContext, useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import { GlobalContext } from "../../main";
 import Bottombar from "./Sidebar/components/Bottombar";
 import Rooms from "./Sidebar/components/Rooms";
 import Topbar from "./Sidebar/components/Topbar";
-import { getUser } from "../../apis/user";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 
 function Chat() {
-  const gctx = useContext(GlobalContext);
-
-  const { user } = gctx;
-
-  useEffect(() => {
-    if (!user) {
-      getUser().then((data) => {
-        gctx.setUser(data.user);
-      });
-    }
-  }, [user]);
+  const user = useSelector((state: RootState) => state.user);
 
   const menuStyles = {
     bg: useColorModeValue("white", "black"),
@@ -58,7 +47,7 @@ function Chat() {
   if (!user) {
     return <>LOADING</>;
   }
-  return <DesktopView user={user} styles={styles} />;
+  return <DesktopView user={user.profile} styles={styles} />;
 }
 
 const DesktopView = ({

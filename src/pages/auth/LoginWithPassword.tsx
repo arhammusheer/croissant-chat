@@ -12,11 +12,12 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { login_emailpassword } from "../../apis/auth";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { userActions } from "../../redux/slices/user.slice";
+
 import logo from "../../assets/croissant.svg";
-import { GlobalContext } from "../../main";
+import { AppDispatch, RootState } from "../../redux/store";
 
 function LoginWithPassword() {
   return (
@@ -48,29 +49,25 @@ const Logo = () => (
 );
 
 const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
 
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const navigate = useNavigate();
-
-  const gctx = useContext(GlobalContext);
+  const user = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch<AppDispatch>();
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
 
-    login_emailpassword(email, password)
-      .then((data) => {
-        gctx.setUser(data.user);
-        navigate("/chat");
+    // Dispatch login action.
+    // If successful, the user will be redirected to the chat page.
+    dispatch(
+      userActions.login({
+        email: form.email,
+        password: form.password,
       })
-      .catch((e) => {
-        setError(e.response ? e.response.data.message : e.message);
-      })
-      .finally(() => setLoading(false));
+    );
   };
 
   return (
@@ -80,8 +77,8 @@ const LoginForm = () => {
           w={"full"}
           placeholder={"Enter your Email"}
           name={"email"}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={form.email}
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
           type="email"
           required
         />
@@ -89,20 +86,20 @@ const LoginForm = () => {
           w={"full"}
           placeholder={"Password"}
           name={"password"}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={form.password}
+          onChange={(e) => setForm({ ...form, password: e.target.value })}
           type="password"
           required
         />
-        <Button type={"submit"} colorScheme={"orange"} isLoading={loading}>
+        <Button type={"submit"} colorScheme={"orange"} isLoading={user.loading}>
           Login
         </Button>
         <Box w={"full"} mt={10} />
-        {error && (
+        {user.error && (
           <Alert status="error" borderRadius={"md"} variant={"subtle"}>
             <AlertIcon boxSize="30px" />
             <AlertTitle mr={2}>Error!</AlertTitle>
-            <AlertDescription>{error}</AlertDescription>
+            <AlertDescription>{user.error}</AlertDescription>
           </Alert>
         )}
       </Stack>

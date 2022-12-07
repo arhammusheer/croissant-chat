@@ -2,31 +2,50 @@ import {
   Flex,
   Heading,
   Icon,
+  Skeleton,
   Stack,
   Text,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 import { motion, MotionProps } from "framer-motion";
 import { useEffect } from "react";
 import { BsFillChatRightFill } from "react-icons/bs";
 import { IoIosShareAlt } from "react-icons/io";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import useGeoLocation from "../../../../hooks/useGeoLocation";
-import useRooms from "../../../../hooks/useRooms";
+import { roomActions } from "../../../../redux/slices/rooms.slice";
+import { AppDispatch, RootState } from "../../../../redux/store";
 import distanceNormalize from "../../../../utils/distanceNormalize";
 import relativeTime from "../../../../utils/relativeTime";
 
 function Rooms() {
-  const { refresh, rooms } = useRooms();
-  const geo = useGeoLocation();
+  const rooms = useSelector((state: RootState) => state.rooms.rooms);
+  const location = useSelector((state: RootState) => state.location);
+  const dispatch = useDispatch<AppDispatch>();
+  const toast = useToast();
 
   useEffect(() => {
-    geo.refresh();
-  }, []);
+    if (location.error) {
+      toast({
+        title: "Location Error",
+        description: location.error,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [location.error, toast]);
 
   useEffect(() => {
-    refresh(geo.lat, geo.lng);
-  }, [geo.lat, geo.lng]);
+    dispatch(
+      roomActions.fetchRooms({
+        latitude: location.coordinates.latitude,
+        longitude: location.coordinates.longitude,
+        radius: 5,
+      })
+    );
+  }, [dispatch, location.coordinates.latitude, location.coordinates.longitude]);
 
   const motionConfig: MotionProps = {
     initial: { opacity: 0, y: 10 },
@@ -39,15 +58,25 @@ function Rooms() {
 
   return (
     <Stack spacing={2} p={2} w={"full"} h={"full"} zIndex={0}>
+      {!rooms.length && (
+        <>
+          {Array.from({ length: 8 }).map((_, i) => (
+            <SkeletonRoom key={i} />
+          ))}
+        </>
+      )}
+
       {rooms &&
         rooms.map((room) => (
-          <Link to={`/chat/${room.id}`} key={room.id}>
+          <Link to={`/chat/${room.metadata?.id}`} key={room.metadata?.id}>
             <motion.div {...motionConfig}>
               <Room
-                key={room.id}
-                name={`${room.name}`}
-                created_at={room.createdAt}
-                distance={room.distance}
+                key={room.metadata?.id}
+                name={`${room.metadata?.name}`}
+                created_at={new Date(
+                  room.metadata?.createdAt as string
+                ).toString()}
+                distance={room.metadata?.distance}
               />
             </motion.div>
           </Link>
@@ -143,6 +172,10 @@ function Room({
       </Flex>
     </Flex>
   );
+}
+
+function SkeletonRoom() {
+  return <Skeleton height={"100px"} borderRadius={"md"} />;
 }
 
 export default Rooms;

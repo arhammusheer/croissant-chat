@@ -31,11 +31,11 @@ const getProfile = createAsyncThunk<Person, string>(
 
     const person = data.data.profile;
 
-		return {
-			id: person.id,
-			emoji: person.emoji,
-			background: person.backgroundColor,
-		}
+    return {
+      id: person.id,
+      emoji: person.emoji,
+      background: person.backgroundColor,
+    };
   }
 );
 

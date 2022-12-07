@@ -36,6 +36,7 @@ interface RoomsState {
 
   loading: boolean;
   isCreating: boolean;
+  isSending: boolean;
   error: string | undefined;
 }
 
@@ -43,6 +44,7 @@ const initialState: RoomsState = {
   rooms: [],
   loading: false,
   isCreating: false,
+  isSending: false,
   error: undefined,
 };
 
@@ -110,6 +112,29 @@ const loadMessages = createAsyncThunk<
   const data = await response.json();
 
   return data.data.messages;
+});
+
+const sendMessage = createAsyncThunk<
+  Message,
+  {
+    roomId: string;
+    text: string;
+  }
+>("rooms/sendMessage", async ({ roomId, text }) => {
+  const response = await fetch(`${API}/rooms/${roomId}/messages`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({
+      content: text,
+    }),
+  });
+
+  const data = await response.json();
+
+  return data.data.message;
 });
 
 const roomsSlice = createSlice({
@@ -196,6 +221,27 @@ const roomsSlice = createSlice({
         room.isLoading = false;
       }
     });
+
+    // Send message
+    builder.addCase(sendMessage.fulfilled, (state, action) => {
+      state.isSending = false;
+      const room = state.rooms.find(
+        (room) => room.metadata.id === action.payload.roomId
+      );
+
+      if (room) {
+        room.messages.push(action.payload);
+      }
+    });
+
+    builder.addCase(sendMessage.pending, (state) => {
+      state.isSending = true;
+    });
+
+    builder.addCase(sendMessage.rejected, (state, action) => {
+      state.isSending = false;
+      state.error = action.error.message;
+    });
   },
 });
 
@@ -203,6 +249,7 @@ export const roomActions = {
   createRoom,
   fetchRooms,
   loadMessages,
+  sendMessage,
   ...roomsSlice.actions,
 };
 

@@ -163,7 +163,11 @@ const roomsSlice = createSlice({
       if (room) {
         room.isLoading = false;
         // Append messages to the room
-        room.messages = [...room.messages, ...action.payload];
+        action.payload.forEach((message) => {
+          if (!room.messages.find((m) => m.id === message.id)) {
+            room.messages.push(message);
+          }
+        });
 
         // Sort messages by createdAt
         room.messages.sort((a, b) => {
@@ -198,6 +202,7 @@ const roomsSlice = createSlice({
 export const roomActions = {
   createRoom,
   fetchRooms,
+  loadMessages,
   ...roomsSlice.actions,
 };
 

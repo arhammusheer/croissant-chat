@@ -3,6 +3,7 @@ import {
   ButtonGroup,
   Flex,
   IconButton,
+  Skeleton,
   Spacer,
   Stack,
   StackDivider,
@@ -12,27 +13,39 @@ import {
 import { AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { BsTrash } from "react-icons/bs";
+import { useDispatch, useSelector } from "react-redux";
+import { peopleActions } from "../../../redux/slices/people.slice";
+import { AppDispatch, RootState } from "../../../redux/store";
 import distanceNormalize from "../../../utils/distanceNormalize";
+import relativeTime from "../../../utils/relativeTime";
 
-function ChatHistory() {
-  const messageTest = {
-    content: "Hello World",
-    avatar: {
-      emoji: "🍩",
-      bg: "yellow.400",
-    },
-    createdAt: "3 mins ago",
-    distance: distanceNormalize(1),
-    isSelf: true,
-  };
+function ChatHistory({
+  messages,
+  isLoading,
+}: {
+  messages: {
+    id: string;
+    roomId: string;
+    userId: string;
+    text: string;
 
+    createdAt: string;
+    updatedAt: string;
+  }[];
+  isLoading: boolean;
+}) {
   const ref = useRef<HTMLDivElement>(null);
+  const user = useSelector((state: RootState) => state.user.profile);
 
   useEffect(() => {
     if (ref.current) {
       ref.current.scrollTop = ref.current.scrollHeight;
     }
   }, []);
+
+  const isSelf = (userId: string) => {
+    return user?.id === userId;
+  };
 
   return (
     <Stack
@@ -42,9 +55,19 @@ function ChatHistory() {
       overflowY={"scroll"}
       ref={ref}
     >
-      {[...Array(20)].map((_, i) => (
-        <Message {...messageTest} />
+      {messages.map((message, index) => (
+        <Skeleton isLoaded={!isLoading}>
+          <Message
+            key={message.id}
+            content={message.text}
+            authorId={message.userId}
+            createdAt={relativeTime(new Date(message.createdAt), new Date())}
+            distance={distanceNormalize(1)}
+            isSelf={isSelf(message.userId)}
+          />
+        </Skeleton>
       ))}
+
       <Box h={"55px"} />
     </Stack>
   );
@@ -52,21 +75,29 @@ function ChatHistory() {
 
 function Message({
   content,
-  avatar,
   createdAt,
+  authorId,
   distance,
   isSelf,
 }: {
   content: string;
-  avatar: {
-    emoji: string;
-    bg: string;
-  };
   createdAt: string;
   distance: string;
+  authorId: string;
   isSelf: boolean;
 }) {
   const [isHovering, setIsHovering] = useState(false);
+  const author = useSelector((state: RootState) => {
+    return state.people.people[authorId];
+  });
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    if (!author) {
+      dispatch(peopleActions.getProfile(authorId));
+    }
+  }, [author]);
 
   const styles = {
     bg: useColorModeValue("gray.50", "black"),
@@ -91,7 +122,7 @@ function Message({
     >
       <Box>
         <Flex
-          bg={avatar.bg}
+          bg={author?.background || "gray.300"}
           w={"30px"}
           h={"30px"}
           m={2}
@@ -99,7 +130,7 @@ function Message({
           align={"center"}
           justify={"center"}
         >
-          {avatar.emoji}
+          {author?.emoji || "👤"}
         </Flex>
       </Box>
       <Flex direction={"column"} w={"full"} px={1} color={styles.color}>

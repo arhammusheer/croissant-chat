@@ -1,7 +1,16 @@
-import { Flex, Text, Tooltip, useColorModeValue } from "@chakra-ui/react";
+import {
+  Button,
+  Flex,
+  Spacer,
+  Text,
+  Tooltip,
+  useColorModeValue,
+} from "@chakra-ui/react";
+import { IoReloadOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { RootState } from "../../../redux/store";
+import { roomActions } from "../../../redux/slices/rooms.slice";
+import { AppDispatch, RootState } from "../../../redux/store";
 
 function Titlebox() {
   const { id } = useParams<{ id: string }>();
@@ -9,6 +18,18 @@ function Titlebox() {
     (state: RootState) =>
       state.rooms.rooms.find((room) => room.metadata?.id === id) || null
   );
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  const reload = () => {
+    if (!id) return;
+
+    dispatch(
+      roomActions.loadMessages({
+        roomId: id,
+      })
+    );
+  };
 
   const styles = {
     bg: useColorModeValue("white", "black"),
@@ -27,6 +48,15 @@ function Titlebox() {
       alignItems={"center"}
     >
       <Title text={room?.metadata?.name || "Loading..."} />
+      <Spacer />
+      <Button
+        variant={"ghost"}
+        mx={2}
+        leftIcon={<IoReloadOutline />}
+        onClick={reload}
+      >
+        <Text fontSize={"sm"}>Reload</Text>
+      </Button>
     </Flex>
   );
 }

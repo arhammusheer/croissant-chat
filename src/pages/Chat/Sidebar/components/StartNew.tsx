@@ -20,12 +20,9 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { BsPlusLg } from "react-icons/bs";
 import { IoMdClose } from "react-icons/io";
-import { createRoom } from "../../../../apis/rooms";
-import useGeoLocation from "../../../../hooks/useGeoLocation";
-import useRooms from "../../../../hooks/useRooms";
 
 function StartNew() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -90,7 +87,6 @@ const StartNewModal = ({
 const StartNewChatForm = ({ onClose }: { onClose: () => void }) => {
   const [value, setValue] = useState("");
   const [loading, setLoading] = useState(false);
-  const r = useRooms();
 
   const toast = useToast({
     position: "bottom-right",
@@ -104,8 +100,6 @@ const StartNewChatForm = ({ onClose }: { onClose: () => void }) => {
       duration: 1000,
       isClosable: true,
     });
-
-    r.newRoom(value);
   };
 
   return (

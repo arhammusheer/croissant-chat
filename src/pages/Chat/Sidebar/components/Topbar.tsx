@@ -7,10 +7,27 @@
  * @param {string} title - Title of the page
  */
 
-import { Avatar, Flex, Heading, useColorModeValue } from "@chakra-ui/react";
+import {
+  Avatar,
+  Flex,
+  Heading,
+  Icon,
+  IconButton,
+  Spacer,
+  useColorModeValue,
+} from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+import { IoReloadOutline } from "react-icons/io5";
 
-function Topbar({ logo, title }: { logo: string; title: string }) {
+function Topbar({
+  logo,
+  title,
+  reload,
+}: {
+  logo: string;
+  title: string;
+  reload: () => void;
+}) {
   const styles = {
     bg: useColorModeValue("white", "gray.900"),
     color: useColorModeValue("gray.800", "white"),
@@ -26,13 +43,19 @@ function Topbar({ logo, title }: { logo: string; title: string }) {
       zIndex={1}
       h={"50px"}
     >
-      <Flex alignItems={"center"}>
+      <Flex alignItems={"center"} justifyContent={"space-between"} w={"full"}>
         <Link to={"/chat"}>
           <Avatar size={"sm"} src={logo} />
         </Link>
         <Heading size={"sm"} ml={2}>
           {title}
         </Heading>
+        <Spacer />
+        <IconButton
+          aria-label={"Settings"}
+          icon={<Icon as={IoReloadOutline} />}
+          onClick={reload}
+        />
       </Flex>
     </Flex>
   );

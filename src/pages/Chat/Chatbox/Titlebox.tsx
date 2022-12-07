@@ -1,9 +1,14 @@
 import { Flex, Text, Tooltip, useColorModeValue } from "@chakra-ui/react";
-import { useContext } from "react";
-import { GlobalContext } from "../../../main";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { RootState } from "../../../redux/store";
 
 function Titlebox() {
-  const gctx = useContext(GlobalContext);
+  const { id } = useParams<{ id: string }>();
+  const room = useSelector(
+    (state: RootState) =>
+      state.rooms.rooms.find((room) => room.metadata?.id === id) || null
+  );
 
   const styles = {
     bg: useColorModeValue("white", "black"),
@@ -21,7 +26,7 @@ function Titlebox() {
       bg={styles.bg}
       alignItems={"center"}
     >
-      <Title text={gctx.user.name} />
+      <Title text={room?.metadata?.name || "Loading..."} />
     </Flex>
   );
 }

@@ -14,15 +14,28 @@ import {
   Spacer,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { useDispatch, useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
+import { roomActions } from "../../redux/slices/rooms.slice";
+import { AppDispatch, RootState } from "../../redux/store";
 import Bottombar from "./Sidebar/components/Bottombar";
 import Rooms from "./Sidebar/components/Rooms";
 import Topbar from "./Sidebar/components/Topbar";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
 
 function Chat() {
   const user = useSelector((state: RootState) => state.user);
+  const location = useSelector((state: RootState) => state.location);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const reloadRooms = () => {
+    dispatch(
+      roomActions.fetchRooms({
+        latitude: location.coordinates.latitude,
+        longitude: location.coordinates.longitude,
+        radius: 5,
+      })
+    );
+  };
 
   const menuStyles = {
     bg: useColorModeValue("white", "black"),
@@ -47,12 +60,15 @@ function Chat() {
   if (!user) {
     return <>LOADING</>;
   }
-  return <DesktopView user={user.profile} styles={styles} />;
+  return (
+    <DesktopView user={user.profile} styles={styles} reload={reloadRooms} />
+  );
 }
 
 const DesktopView = ({
   user,
   styles,
+  reload,
 }: {
   user: any;
   styles: {
@@ -60,6 +76,7 @@ const DesktopView = ({
     chat: any;
     menu: any;
   };
+  reload: () => void;
 }) => {
   return (
     <Grid
@@ -80,7 +97,7 @@ const DesktopView = ({
         borderRight={"1px"}
         borderColor={styles.menu.border}
       >
-        <Topbar logo={logo} title={"Croissant Chat"} />
+        <Topbar logo={logo} title={"Croissant Chat"} reload={reload} />
         <Box
           overflowY={"scroll"}
           h={{

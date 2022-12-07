@@ -1,5 +1,4 @@
 import {
-  Button,
   Flex,
   IconButton,
   Input,
@@ -7,10 +6,7 @@ import {
   InputRightElement,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { useContext } from "react";
 import { IoMdSend } from "react-icons/io";
-import { useLoaderData } from "react-router-dom";
-import { GlobalContext } from "../../../main";
 
 function SendMessage() {
   const styles = {
@@ -34,11 +30,9 @@ function SendMessage() {
 }
 
 function ChatInput() {
-  const gctx = useContext(GlobalContext);
-
   return (
     <InputGroup w={"full"}>
-      <Input placeholder={`Message #${gctx.user.name}`} />
+      <Input placeholder={`Message Here`} />
       <InputRightElement p={1}>
         <IconButton
           aria-label="Send message"

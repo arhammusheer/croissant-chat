@@ -10,7 +10,7 @@ interface Room {
 }
 
 interface RoomState {
-  metadata: Room | undefined;
+  metadata: Room;
   messages: Message[];
   isLoading: boolean;
 }
@@ -21,8 +21,8 @@ interface Message {
   userId: string;
   text: string;
 
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface RoomForm {
@@ -92,6 +92,26 @@ const fetchRooms = createAsyncThunk<
   return data.data.rooms;
 });
 
+const loadMessages = createAsyncThunk<
+  Message[],
+  {
+    roomId: string;
+  }
+>("rooms/loadMessages", async ({ roomId }) => {
+  const response = await fetch(`${API}/rooms/${roomId}/messages`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    credentials: "include",
+  });
+
+  const data = await response.json();
+
+  return data.data.messages;
+});
+
 const roomsSlice = createSlice({
   name: "rooms",
   initialState,
@@ -135,12 +155,50 @@ const roomsSlice = createSlice({
       state.loading = false;
       state.error = action.error.message;
     });
+
+    // Load messages
+    builder.addCase(loadMessages.fulfilled, (state, action) => {
+      const room = state.rooms.find((room) => room.isLoading);
+
+      if (room) {
+        room.isLoading = false;
+        // Append messages to the room
+        room.messages = [...room.messages, ...action.payload];
+
+        // Sort messages by createdAt
+        room.messages.sort((a, b) => {
+          const dateA = new Date(a.createdAt);
+          const dateB = new Date(b.createdAt);
+
+          return dateA.getTime() - dateB.getTime();
+        });
+      }
+    });
+
+    builder.addCase(loadMessages.pending, (state, action) => {
+      const room = state.rooms.find(
+        (room) => room.metadata.id === action.meta.arg.roomId
+      );
+
+      if (room) {
+        room.isLoading = true;
+      }
+    });
+
+    builder.addCase(loadMessages.rejected, (state, action) => {
+      const room = state.rooms.find((room) => room.isLoading);
+
+      if (room) {
+        room.isLoading = false;
+      }
+    });
   },
 });
 
 export const roomActions = {
   createRoom,
   fetchRooms,
+  ...roomsSlice.actions,
 };
 
 export default roomsSlice.reducer;

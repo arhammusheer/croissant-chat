@@ -20,7 +20,7 @@ import distanceNormalize from "../../../../utils/distanceNormalize";
 import relativeTime from "../../../../utils/relativeTime";
 
 function Rooms() {
-  const rooms = useSelector((state: RootState) => state.rooms.rooms);
+  const rooms = useSelector((state: RootState) => state.rooms);
   const location = useSelector((state: RootState) => state.location);
   const dispatch = useDispatch<AppDispatch>();
   const toast = useToast();
@@ -58,16 +58,8 @@ function Rooms() {
 
   return (
     <Stack spacing={2} p={2} w={"full"} h={"full"} zIndex={0}>
-      {!rooms.length && (
-        <>
-          {Array.from({ length: 8 }).map((_, i) => (
-            <SkeletonRoom key={i} />
-          ))}
-        </>
-      )}
-
-      {rooms &&
-        rooms.map((room) => (
+      {rooms.rooms &&
+        rooms.rooms.map((room) => (
           <Link to={`/chat/${room.metadata?.id}`} key={room.metadata?.id}>
             <motion.div {...motionConfig}>
               <Room
@@ -81,6 +73,16 @@ function Rooms() {
             </motion.div>
           </Link>
         ))}
+      {rooms.loading && (
+        <>
+          {Array.from(
+            { length: rooms.rooms.length > 8 ? 2 : 10 - rooms.rooms.length },
+            (_, i) => (
+              <SkeletonRoom key={i} />
+            )
+          )}
+        </>
+      )}
     </Stack>
   );
 }

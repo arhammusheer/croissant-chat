@@ -14,6 +14,8 @@ import Chatbox from "./pages/Chat/Chatbox/Chatbox";
 import Introduction from "./pages/Chat/Introduction";
 import { WS } from "./utils/defaults";
 import { roomActions } from "./redux/slices/rooms.slice";
+import Login from "./pages/auth/Login";
+import PasswordlessCallback from "./pages/auth/Passwordless";
 
 const Routing = () => {
   const [ws, setWs] = useState<WebSocket | null>(null);
@@ -77,6 +79,10 @@ const Routing = () => {
     if (user.isLoggedIn && !location.pathname.startsWith("/chat")) {
       navigate("/chat");
     }
+
+    if (!user.isLoggedIn && location.pathname.startsWith("/chat")) {
+      navigate("/");
+    }
   }, [user.isLoggedIn, navigate]);
 
   useEffect(() => {
@@ -130,8 +136,9 @@ const Routing = () => {
       ) : (
         <>
           <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<LoginWithPassword />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/passwordless" element={<PasswordlessCallback />} />
         </>
       )}
       <Route path="*" element={<_404 />} />

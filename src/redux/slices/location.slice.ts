@@ -52,7 +52,41 @@ const updateLocation = createAsyncThunk<LocationState>(
           });
         },
         (error) => {
-          reject(error);
+          fetch(`${API}/utils/geoip`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          })
+            .then(async (response) => {
+              const { data } = await response.json();
+              const { lat, lon } = data.geo;
+              const latitude = lat;
+              const longitude = lon;
+              console.log("latitude", latitude);
+              console.log("longitude", longitude);
+
+              // sendLocationLog({
+              //   latitude: Number(latitude),
+              //   longitude: Number(longitude),
+              // });
+              resolve({
+                coordinates: {
+                  latitude: latitude,
+                  longitude: longitude,
+                },
+                isAvailable: true,
+                timestamp: 0,
+                loading: false,
+                error: undefined,
+              });
+            })
+            .catch((error) => {
+              reject(error);
+            });
+
+          // reject(error);
         }
       );
     });

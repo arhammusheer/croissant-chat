@@ -6,6 +6,10 @@
  */
 
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
   Box,
   Button,
   Divider,
@@ -16,11 +20,13 @@ import {
   Stack,
   Text,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { BsApple } from "react-icons/bs";
 import { FcGoogle } from "react-icons/fc";
 import logo from "../../assets/croissant.svg";
+import { API } from "../../utils/defaults";
 
 function Login() {
   return (
@@ -55,21 +61,72 @@ const Logo = () => (
 );
 
 const EmailForm = () => {
-  const [email, setEmail] = useState("");
+  const [state, setState] = useState({
+    email: "",
+    loading: false,
+    errorStatus: false,
+    errorMessage: "",
+  });
+
+  const toast = useToast();
+
+  const request = async (email: string) => {
+    const response = await fetch(`${API}/auth/passwordless`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
+  };
+
+  const form = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setState({ ...state, loading: true });
+
+    if (state.email === "") {
+      setState({
+        ...state,
+        loading: false,
+        errorStatus: true,
+        errorMessage: "Please enter your email",
+      });
+    }
+
+    request(state.email).then(() => {
+      setState({ ...state, loading: false });
+      toast({
+        title: "Email Sent",
+        description: "Check your email for the magic link",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    });
+  };
 
   return (
-    <form style={{ width: "100%" }}>
+    <form style={{ width: "100%" }} onSubmit={form}>
       <Stack w={"full"} gap={2}>
         <Input
           w={"full"}
           placeholder={"Enter your Email"}
           name={"email"}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={state.email}
+          onChange={(e) => setState({ ...state, email: e.target.value })}
+          required
+          type={"email"}
         />
         <Button type={"submit"} colorScheme={"orange"}>
           Continue with Email
         </Button>
+        {state.errorStatus && (
+          <Alert status="error" borderRadius={"md"}>
+            <AlertIcon />
+            <AlertTitle mr={2}>Error!</AlertTitle>
+            <AlertDescription>{state.errorMessage}</AlertDescription>
+          </Alert>
+        )}
       </Stack>
     </form>
   );

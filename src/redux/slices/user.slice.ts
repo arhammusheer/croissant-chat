@@ -40,9 +40,35 @@ const login = createAsyncThunk<User, LoginParams>(
     return {
       ...data.data.user,
       token: data.data.token,
-    }
+    };
   }
 );
+
+const passwordlessLogin = createAsyncThunk<
+  User,
+  {
+    code: string;
+  }
+>("user/passwordlessLogin", async ({ code }, { rejectWithValue }) => {
+  const response = await fetch(`${API}/auth/passwordless/callback?code=${code}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+
+  if (response.status === 401) {
+    rejectWithValue("Unauthorized access");
+  }
+
+  const data = await response.json();
+
+  return {
+    ...data.data.user,
+    token: data.data.token,
+  };
+});
 
 const getProfile = createAsyncThunk<User>(
   "user/getProfile",
@@ -142,11 +168,26 @@ const userSlice = createSlice({
     builder.addCase(randomizeEmoji.fulfilled, (state, action) => {
       state.profile = action.payload;
     });
+
+    // Passwordless Login
+    builder.addCase(passwordlessLogin.fulfilled, (state, action) => {
+      state.loading = false;
+      state.isLoggedIn = true;
+      state.profile = action.payload;
+    });
+    builder.addCase(passwordlessLogin.rejected, (state) => {
+      state.loading = false;
+      state.isLoggedIn = false;
+      state.error = "Login failed. Your code may have expired.";
+    });
+
+    builder.addCase(passwordlessLogin.pending, (state) => {});
   },
 });
 
 export const userActions = {
   login,
+  passwordlessLogin,
   getProfile,
   randomizeEmoji,
 };

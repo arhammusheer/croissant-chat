@@ -27,8 +27,14 @@ const PasswordlessCallback = () => {
     );
   };
 
+  const checkLogin = () => {
+    dispatch(userActions.getProfile());
+  };
+
   useMemo(() => {
-    handlePasswordless();
+    handlePasswordless().then(() => {
+      checkLogin();
+    });
   }, []);
 
   return (

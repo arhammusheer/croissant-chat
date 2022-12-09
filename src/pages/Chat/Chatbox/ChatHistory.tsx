@@ -2,6 +2,7 @@ import {
   Box,
   ButtonGroup,
   Flex,
+  Heading,
   IconButton,
   Skeleton,
   Spacer,
@@ -14,6 +15,7 @@ import { AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { BsTrash } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { peopleActions } from "../../../redux/slices/people.slice";
 import { AppDispatch, RootState } from "../../../redux/store";
 import distanceNormalize from "../../../utils/distanceNormalize";
@@ -36,6 +38,11 @@ function ChatHistory({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const user = useSelector((state: RootState) => state.user.profile);
+  const { id } = useParams<{ id: string }>();
+  const room = useSelector(
+    (state: RootState) =>
+      state.rooms.rooms.find((room) => room.metadata?.id === id) || null
+  );
 
   useEffect(() => {
     if (ref.current) {
@@ -54,6 +61,7 @@ function ChatHistory({
       h={"full"}
       overflowY={"scroll"}
       ref={ref}
+      justify={"flex-end"}
     >
       {messages.map((message, index) => (
         <Skeleton isLoaded={!isLoading}>
@@ -62,13 +70,18 @@ function ChatHistory({
             content={message.text}
             authorId={message.userId}
             createdAt={relativeTime(new Date(message.createdAt), new Date())}
-            distance={distanceNormalize(1)}
             isSelf={isSelf(message.userId)}
           />
         </Skeleton>
       ))}
-
-      <Box h={"55px"} />
+      {messages.length === 0 && (
+        <Stack direction={"column"} p={4}>
+          <Heading color={useColorModeValue("gray.600", "gray.400")}>
+            Welcome to {room?.metadata.name || ""}
+          </Heading>
+          <Text fontSize={"md"}>No messages yet</Text>
+        </Stack>
+      )}
     </Stack>
   );
 }
@@ -77,12 +90,10 @@ function Message({
   content,
   createdAt,
   authorId,
-  distance,
   isSelf,
 }: {
   content: string;
   createdAt: string;
-  distance: string;
   authorId: string;
   isSelf: boolean;
 }) {
@@ -139,7 +150,6 @@ function Message({
         </Flex>
         <Stack direction={"row"} w={"full"} divider={<StackDivider />} mt={1}>
           <Text fontSize={"xs"}>{createdAt}</Text>
-          <Text fontSize={"xs"}>{distance}</Text>
         </Stack>
       </Flex>
       <Spacer />

@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useFetcher, useParams } from "react-router-dom";
 import { peopleActions } from "../../../redux/slices/people.slice";
 import { AppDispatch, RootState } from "../../../redux/store";
+import { AUDIOS } from "../../../utils/defaults";
 import distanceNormalize from "../../../utils/distanceNormalize";
 import relativeTime from "../../../utils/relativeTime";
 
@@ -54,6 +55,11 @@ function ChatHistory({
     if (ref.current) {
       ref.current.scrollTop = ref.current.scrollHeight;
     }
+  };
+
+  const playSound = (url: string) => {
+    const audio = new Audio(url);
+    audio.play();
   };
 
   const scrollToBottom = (
@@ -105,6 +111,7 @@ function ChatHistory({
       keepBottom();
     } else {
       setUnseen((prev) => prev + 1);
+      playSound(AUDIOS.newMessage);
     }
   }, [messages]);
 

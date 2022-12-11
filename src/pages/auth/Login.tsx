@@ -22,11 +22,14 @@ import {
   useColorModeValue,
   useToast,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BsApple } from "react-icons/bs";
 import { FcGoogle } from "react-icons/fc";
+import { useDispatch } from "react-redux";
 import logo from "../../assets/croissant.svg";
-import { API } from "../../utils/defaults";
+import { userActions } from "../../redux/slices/user.slice";
+import { AppDispatch } from "../../redux/store";
+import { API, GOOGLE_CLIENT_ID } from "../../utils/defaults";
 
 function Login() {
   return (
@@ -138,17 +141,77 @@ const LoginWithGoogle = () => {
       border: useColorModeValue("gray.300", "gray.600"),
     },
   };
+  const [isScriptLoaded, setIsScriptLoaded] = useState(false);
+
+  const dispatch = useDispatch<AppDispatch>();
+
+  const googleButtonRef = useRef<HTMLButtonElement>(null);
+
+  const loadScript = (src: string) => {
+    if (window && document) {
+      const script = window.document.createElement("script");
+      script.src = src;
+      script.async = true;
+      script.defer = true;
+      document.body.appendChild(script);
+
+      script.onload = () => {
+        setIsScriptLoaded(true);
+      };
+    }
+  };
+
+  const initClient = () => {
+    const google = window.google;
+
+    if (!google) {
+      return;
+    }
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      login_uri: `${API}/auth/google`,
+      callback: (response: any) => {
+        if (response.credential) {
+          dispatch(userActions.loginWithGoogle(response.credential));
+        }
+      },
+    });
+
+    google.accounts.id.prompt((notification: any) => {
+      if (notification.isNotDisplayed()) {
+        console.log("Prompt was not displayed");
+      } else if (notification.isSkippedMoment()) {
+        console.log("Prompt was skipped");
+      }
+    });
+
+    if (googleButtonRef.current) {
+      google.accounts.id.renderButton(googleButtonRef.current, {
+        size: "large",
+        width: googleButtonRef.current.clientWidth,
+      });
+    }
+  };
+
+  useEffect(() => {
+    loadScript("https://accounts.google.com/gsi/client");
+  }, []);
+
+  useEffect(() => {
+    if (isScriptLoaded) {
+      initClient();
+    }
+  }, [isScriptLoaded]);
 
   return (
     <Button
+      ref={googleButtonRef}
       w={"full"}
-      border={"1px"}
-      borderColor={styles.button.border}
-      colorScheme={"gray"}
-      leftIcon={<FcGoogle />}
-    >
-      Continue with Google
-    </Button>
+      p={0}
+      className={"google-signin-button"}
+      isLoading={!isScriptLoaded}
+      loadingText={"Loading Google"}
+    />
   );
 };
 

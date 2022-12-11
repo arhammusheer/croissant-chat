@@ -50,13 +50,16 @@ const passwordlessLogin = createAsyncThunk<
     code: string;
   }
 >("user/passwordlessLogin", async ({ code }, { rejectWithValue }) => {
-  const response = await fetch(`${API}/auth/passwordless/callback?code=${code}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
-  });
+  const response = await fetch(
+    `${API}/auth/passwordless/callback?code=${code}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    }
+  );
 
   if (response.status === 401) {
     rejectWithValue("Unauthorized access");
@@ -69,6 +72,30 @@ const passwordlessLogin = createAsyncThunk<
     token: data.data.token,
   };
 });
+
+const loginWithGoogle = createAsyncThunk<User, string>(
+  "user/loginWithGoogle",
+  async (token, { rejectWithValue }) => {
+    const response = await fetch(`${API}/auth/google/?token=${token}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+
+    if (response.status === 401) {
+      rejectWithValue("Unauthorized access");
+    }
+
+    const data = await response.json();
+
+    return {
+      ...data.data.user,
+      token: data.data.token,
+    };
+  }
+);
 
 const getProfile = createAsyncThunk<User>(
   "user/getProfile",
@@ -182,6 +209,23 @@ const userSlice = createSlice({
     });
 
     builder.addCase(passwordlessLogin.pending, (state) => {});
+
+    // Login with Google
+    builder.addCase(loginWithGoogle.fulfilled, (state, action) => {
+      state.loading = false;
+      state.isLoggedIn = true;
+      state.profile = action.payload;
+    });
+
+    builder.addCase(loginWithGoogle.rejected, (state) => {
+      state.loading = false;
+      state.isLoggedIn = false;
+      state.error = "Login failed";
+    });
+
+    builder.addCase(loginWithGoogle.pending, (state) => {
+      state.loading = true;
+    });
   },
 });
 
@@ -190,6 +234,7 @@ export const userActions = {
   passwordlessLogin,
   getProfile,
   randomizeEmoji,
+  loginWithGoogle,
 };
 
 export default userSlice.reducer;

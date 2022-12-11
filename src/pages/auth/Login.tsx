@@ -24,7 +24,6 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { BsApple } from "react-icons/bs";
-import { FcGoogle } from "react-icons/fc";
 import { useDispatch } from "react-redux";
 import logo from "../../assets/croissant.svg";
 import { userActions } from "../../redux/slices/user.slice";
@@ -50,7 +49,7 @@ function Login() {
           color={useColorModeValue("gray.300", "gray.600")}
           text={"OR"}
         />
-        <LoginWithApple />
+        {/* <LoginWithApple /> */}
         <LoginWithGoogle />
       </Stack>
     </Flex>

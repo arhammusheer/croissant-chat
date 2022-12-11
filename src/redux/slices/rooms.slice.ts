@@ -80,8 +80,11 @@ const fetchRooms = createAsyncThunk<
     radius: number;
   }
 >("rooms/fetchRooms", async ({ latitude, longitude, radius }) => {
+  const URL = `${API}/rooms?latitude=${latitude}&longitude=${longitude}&radius=${radius}`;
+  console.log("URL", URL);
+
   const response = await fetch(
-    `${API}/rooms?latitude=${latitude}&longitude=${longitude}&radius=${radius}`,
+    URL,
     {
       method: "GET",
       headers: {

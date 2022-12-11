@@ -42,7 +42,7 @@ function Rooms() {
       roomActions.fetchRooms({
         latitude: location.coordinates.latitude,
         longitude: location.coordinates.longitude,
-        radius: 5,
+        radius: location.radius,
       })
     );
   }, [dispatch, location.coordinates.latitude, location.coordinates.longitude]);

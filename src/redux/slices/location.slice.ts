@@ -7,6 +7,8 @@ interface LocationState {
     longitude: number;
   };
 
+  radius: number;
+
   isAvailable: boolean;
   timestamp: number;
   loading: boolean;
@@ -18,6 +20,8 @@ const initialState: LocationState = {
     latitude: 0,
     longitude: 0,
   },
+
+  radius: 5,
 
   isAvailable: false,
   timestamp: 0,
@@ -45,6 +49,9 @@ const updateLocation = createAsyncThunk<LocationState>(
               latitude: position.coords.latitude,
               longitude: position.coords.longitude,
             },
+
+            radius: 5,
+
             isAvailable: true,
             timestamp: position.timestamp,
             loading: false,
@@ -76,6 +83,9 @@ const updateLocation = createAsyncThunk<LocationState>(
                   latitude: latitude,
                   longitude: longitude,
                 },
+
+                radius: 5,
+
                 isAvailable: true,
                 timestamp: 0,
                 loading: false,
@@ -120,7 +130,12 @@ const sendLocationLog = async ({
 const locationSlice = createSlice({
   name: "location",
   initialState,
-  reducers: {},
+  reducers: {
+    updateRadius: (state, action) => {
+      state.radius = action.payload;
+    }
+
+  },
   extraReducers: (builder) => {
     builder.addCase(updateLocation.pending, (state) => {
       state.loading = true;
@@ -142,6 +157,7 @@ const locationSlice = createSlice({
 
 export const locationActions = {
   updateLocation,
+  ...locationSlice.actions,
 };
 
 export default locationSlice.reducer;

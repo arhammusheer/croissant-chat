@@ -32,7 +32,7 @@ function Chat() {
       roomActions.fetchRooms({
         latitude: location.coordinates.latitude,
         longitude: location.coordinates.longitude,
-        radius: 5,
+        radius: location.radius,
       })
     );
   };

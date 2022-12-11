@@ -113,7 +113,7 @@ const Routing = () => {
             dispatch(roomActions.addRoom(data.data));
             break;
           case "chat":
-            if (user.profile?.id !== data.userId) {
+            if (user.profile?.id !== data.data.userId) {
               dispatch(roomActions.addMessage(data.data));
             }
             break;

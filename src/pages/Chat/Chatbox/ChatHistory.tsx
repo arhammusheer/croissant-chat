@@ -39,6 +39,7 @@ function ChatHistory({
   isLoading: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  const stackRef = useRef<HTMLDivElement>(null);
   const user = useSelector((state: RootState) => state.user.profile);
   const [unseen, setUnseen] = useState(0);
   const { id } = useParams<{ id: string }>();
@@ -107,7 +108,7 @@ function ChatHistory({
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
     const isSelf = lastMessage?.userId === user?.id;
-    if (isBottom && !isSelf) {
+    if (isBottom) {
       keepBottom();
     } else {
       setUnseen((prev) => prev + 1);
@@ -125,8 +126,11 @@ function ChatHistory({
       h={"full"}
       // justify={"flex-end"}
     >
-      <Box h={"full"} />
-      <Stack direction={"column"}>
+      <Box
+        maxH={"full"}
+        h={`calc(100% - ${stackRef.current?.clientHeight}px)`}
+      />
+      <Stack direction={"column"} ref={stackRef}>
         {messages.map((message, index) => (
           <Message
             key={`${message.id}-${index}`}

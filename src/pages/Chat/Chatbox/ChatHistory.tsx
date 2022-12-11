@@ -3,6 +3,7 @@ import {
   ButtonGroup,
   Flex,
   Heading,
+  Icon,
   IconButton,
   Skeleton,
   Spacer,
@@ -13,9 +14,9 @@ import {
 } from "@chakra-ui/react";
 import { AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { BsTrash } from "react-icons/bs";
+import { BsArrowDown, BsTrash } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useFetcher, useParams } from "react-router-dom";
 import { peopleActions } from "../../../redux/slices/people.slice";
 import { AppDispatch, RootState } from "../../../redux/store";
 import distanceNormalize from "../../../utils/distanceNormalize";
@@ -38,51 +39,147 @@ function ChatHistory({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const user = useSelector((state: RootState) => state.user.profile);
+  const [unseen, setUnseen] = useState(0);
   const { id } = useParams<{ id: string }>();
   const room = useSelector(
     (state: RootState) =>
       state.rooms.rooms.find((room) => room.metadata?.id === id) || null
   );
 
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.scrollTop = ref.current.scrollHeight;
-    }
-  }, []);
-
   const isSelf = (userId: string) => {
     return user?.id === userId;
   };
 
+  const keepBottom = () => {
+    if (ref.current) {
+      ref.current.scrollTop = ref.current.scrollHeight;
+    }
+  };
+
+  const scrollToBottom = (
+    ref: React.RefObject<HTMLDivElement>,
+    smooth = false
+  ) => {
+    if (ref.current) {
+      ref.current.scrollTo({
+        top: ref.current.scrollHeight,
+        behavior: smooth ? "smooth" : "auto",
+      });
+    } else {
+      console.log("ref not found");
+    }
+  };
+  const [isBottom, setIsBottom] = useState(true);
+
+  useEffect(() => {
+    // Scroll Listener
+    const handleScroll = () => {
+      if (ref.current) {
+        const { scrollTop, scrollHeight, clientHeight } = ref.current;
+        const isBottom = scrollHeight - scrollTop === clientHeight;
+        setIsBottom(isBottom);
+
+        if (isBottom) {
+          setUnseen(0);
+        }
+      }
+    };
+    if (ref.current) {
+      ref.current.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      if (ref.current) {
+        ref.current.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    keepBottom();
+  }, [isLoading]);
+
+  useEffect(() => {
+    const lastMessage = messages[messages.length - 1];
+    const isSelf = lastMessage?.userId === user?.id;
+    if (isBottom && !isSelf) {
+      keepBottom();
+    } else {
+      setUnseen((prev) => prev + 1);
+    }
+  }, [messages]);
+
   return (
-    <Stack
-      direction={"column"}
-      w={"full"}
-      h={"full"}
+    <Box
       overflowY={"scroll"}
       ref={ref}
-      justify={"flex-end"}
+      overflowX={"hidden"}
+      // direction={"column"}
+      w={"full"}
+      h={"full"}
+      // justify={"flex-end"}
     >
-      {messages.map((message, index) => (
-        <Skeleton isLoaded={!isLoading}>
+      <Stack direction={"column"}>
+        {messages.map((message, index) => (
           <Message
-            key={message.id}
+            key={`${message.id}-${index}`}
             content={message.text}
             authorId={message.userId}
             createdAt={relativeTime(new Date(message.createdAt), new Date())}
             isSelf={isSelf(message.userId)}
           />
-        </Skeleton>
-      ))}
-      {messages.length === 0 && (
-        <Stack direction={"column"} p={4}>
-          <Heading color={useColorModeValue("gray.600", "gray.400")}>
-            Welcome to {room?.metadata.name || ""}
-          </Heading>
-          <Text fontSize={"md"}>No messages yet</Text>
-        </Stack>
-      )}
-    </Stack>
+        ))}
+        {messages.length === 0 && (
+          <Stack direction={"column"} p={4}>
+            <Heading color={useColorModeValue("gray.600", "gray.400")}>
+              Welcome to {room?.metadata.name || ""}
+            </Heading>
+            <Text fontSize={"md"}>No messages yet</Text>
+          </Stack>
+        )}
+      </Stack>
+      <AnimatePresence>
+        {!isBottom && (
+          <ScrollToBottomBar
+            onClick={() => {
+              scrollToBottom(ref, true);
+            }}
+            unseen={unseen}
+          />
+        )}
+      </AnimatePresence>
+    </Box>
+  );
+}
+
+function ScrollToBottomBar({
+  unseen,
+  onClick,
+}: {
+  unseen: number;
+  onClick: () => void;
+}) {
+  return (
+    <Flex
+      position={"absolute"}
+      bottom={"80px"}
+      right={"20px"}
+      bg={useColorModeValue("#FC818188", "gray.700")}
+      p={2}
+      onClick={onClick}
+      align={"center"}
+      cursor={"pointer"}
+      paddingX={4}
+      borderRadius={"md"}
+    >
+      <Stack direction={"row"} align={"center"} spacing={2}>
+        {unseen > 0 ? (
+          <Text fontSize={"sm"}>{unseen} new messages</Text>
+        ) : (
+          <Text fontSize={"sm"}>Scroll to bottom</Text>
+        )}
+        <Icon as={BsArrowDown} />
+      </Stack>
+    </Flex>
   );
 }
 

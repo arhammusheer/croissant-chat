@@ -84,6 +84,7 @@ const DesktopView = ({
       w={"full"}
       templateColumns={"repeat(10, 1fr)"}
       bg={styles.base.bg}
+      overflowY={"hidden"}
     >
       <GridItem
         colSpan={{
@@ -117,7 +118,6 @@ const DesktopView = ({
         }}
         bg={styles.chat.bg}
         color={styles.chat.color}
-        overflowY={"hidden"}
       >
         <Outlet />
       </GridItem>

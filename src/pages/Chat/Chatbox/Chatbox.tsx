@@ -35,12 +35,13 @@ function Chatbox() {
   }, [dispatch, id]);
 
   return (
-    <Stack direction={"column"} gap={0}>
+    <Stack direction={"column"} gap={0} overflowY={"hidden"} h={"full"}>
       <Titlebox />
       <Box
         h={{
           base: "calc(100vh - 50px - 80px)",
         }}
+        overflowY={"hidden"}
       >
         <ChatHistory
           messages={room?.messages || []}

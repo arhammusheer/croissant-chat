@@ -83,16 +83,13 @@ const fetchRooms = createAsyncThunk<
   const URL = `${API}/rooms?latitude=${latitude}&longitude=${longitude}&radius=${radius}`;
   console.log("URL", URL);
 
-  const response = await fetch(
-    URL,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    }
-  );
+  const response = await fetch(URL, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
 
   const data = await response.json();
 
@@ -153,6 +150,20 @@ const roomsSlice = createSlice({
 
       if (room) {
         room.messages.push(action.payload);
+      }
+    },
+    addRoom(state, action) {
+      // if room doesn't exist, add it
+      if (!state.rooms.find((room) => room.metadata.id === action.payload.id)) {
+        state.rooms.push({
+          metadata: action.payload,
+          messages: [],
+          isLoading: false,
+        });
+
+        state.rooms.sort((a, b) =>
+          b.metadata.createdAt.localeCompare(a.metadata.createdAt)
+        );
       }
     },
   },

@@ -169,6 +169,7 @@ const LoginWithGoogle = () => {
     google.accounts.id.initialize({
       client_id: GOOGLE_CLIENT_ID,
       login_uri: `${API}/auth/google`,
+      auto_select: true,
       callback: (response: any) => {
         if (response.credential) {
           dispatch(userActions.loginWithGoogle(response.credential));
@@ -188,6 +189,8 @@ const LoginWithGoogle = () => {
       google.accounts.id.renderButton(googleButtonRef.current, {
         size: "large",
         width: googleButtonRef.current.clientWidth,
+        shape: "circle",
+        text: "continue_with",
       });
     }
   };
@@ -203,14 +206,18 @@ const LoginWithGoogle = () => {
   }, [isScriptLoaded]);
 
   return (
-    <Button
-      ref={googleButtonRef}
-      w={"full"}
-      p={0}
-      className={"google-signin-button"}
-      isLoading={!isScriptLoaded}
-      loadingText={"Loading Google"}
-    />
+    <Flex w={"full"} bg={"black"} p={0} borderRadius={"full"}>
+      <Button
+        ref={googleButtonRef}
+        w={"full"}
+        p={0}
+        className={"google-signin-button"}
+        isLoading={!isScriptLoaded}
+        loadingText={"Loading Google"}
+        m={0}
+        borderRadius={"full"}
+      />
+    </Flex>
   );
 };
 

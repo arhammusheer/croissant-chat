@@ -22,6 +22,7 @@ const Routing = () => {
   const [subs, setSubs] = useState<string[]>([]);
 
   const user = useSelector((state: RootState) => state.user);
+  const loc = useSelector((state: RootState) => state.location);
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
 
@@ -76,6 +77,17 @@ const Routing = () => {
   }, [location.pathname]);
 
   useEffect(() => {
+    if (loc.coordinates && ws) {
+      ws.send(
+        JSON.stringify({
+          type: "location",
+          location: loc.coordinates,
+        })
+      );
+    }
+  }, [loc.coordinates]);
+
+  useEffect(() => {
     if (user.isLoggedIn && !location.pathname.startsWith("/chat")) {
       navigate("/chat");
     }
@@ -96,9 +108,15 @@ const Routing = () => {
       ws.onmessage = (e) => {
         const data = JSON.parse(e.data);
         console.log(data);
-
-        if (user.profile?.id !== data.userId) {
-          dispatch(roomActions.addMessage(data));
+        switch (data.type) {
+          case "room":
+            dispatch(roomActions.addRoom(data.data));
+            break;
+          case "chat":
+            if (user.profile?.id !== data.userId) {
+              dispatch(roomActions.addMessage(data.data));
+            }
+            break;
         }
       };
 

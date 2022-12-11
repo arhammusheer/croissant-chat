@@ -111,7 +111,7 @@ function ChatHistory({
       keepBottom();
     } else {
       setUnseen((prev) => prev + 1);
-      playSound(AUDIOS.newMessage);
+      // playSound(AUDIOS.newMessage);
     }
   }, [messages]);
 
@@ -125,6 +125,7 @@ function ChatHistory({
       h={"full"}
       // justify={"flex-end"}
     >
+      <Box h={"full"} />
       <Stack direction={"column"}>
         {messages.map((message, index) => (
           <Message

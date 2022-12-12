@@ -5,6 +5,9 @@ import {
   Heading,
   Icon,
   IconButton,
+  Input,
+  InputGroup,
+  InputRightElement,
   Skeleton,
   Spacer,
   Stack,
@@ -14,10 +17,11 @@ import {
 } from "@chakra-ui/react";
 import { AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { BsArrowDown, BsTrash } from "react-icons/bs";
+import { BsArrowDown, BsCheck, BsPencil, BsTrash, BsX } from "react-icons/bs";
 import { useDispatch, useSelector } from "react-redux";
 import { useFetcher, useParams } from "react-router-dom";
 import { peopleActions } from "../../../redux/slices/people.slice";
+import { roomActions } from "../../../redux/slices/rooms.slice";
 import { AppDispatch, RootState } from "../../../redux/store";
 import { AUDIOS } from "../../../utils/defaults";
 import distanceNormalize from "../../../utils/distanceNormalize";
@@ -47,6 +51,7 @@ function ChatHistory({
     (state: RootState) =>
       state.rooms.rooms.find((room) => room.metadata?.id === id) || null
   );
+  const dispatch = useDispatch<AppDispatch>();
 
   const isSelf = (userId: string) => {
     return user?.id === userId;
@@ -133,6 +138,23 @@ function ChatHistory({
             authorId={message.userId}
             createdAt={relativeTime(new Date(message.createdAt), new Date())}
             isSelf={isSelf(message.userId)}
+            onDelete={() =>
+              dispatch(
+                roomActions.deleteMessage({
+                  roomId: message.roomId,
+                  messageId: message.id,
+                })
+              )
+            }
+            onEdit={(text: string) =>
+              dispatch(
+                roomActions.editMessage({
+                  roomId: message.roomId,
+                  messageId: message.id,
+                  text,
+                })
+              )
+            }
           />
         ))}
         {messages.length === 0 && (
@@ -195,16 +217,23 @@ function Message({
   createdAt,
   authorId,
   isSelf,
+  onDelete,
+  onEdit,
 }: {
   content: string;
   createdAt: string;
   authorId: string;
   isSelf: boolean;
+  onDelete?: () => void;
+  onEdit?: (text: string) => void;
 }) {
   const [isHovering, setIsHovering] = useState(false);
   const author = useSelector((state: RootState) => {
     return state.people.people[authorId];
   });
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [editText, setEditText] = useState(content);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -221,6 +250,14 @@ function Message({
       bg: useColorModeValue("gray.100", "gray.900"),
     },
   } as const;
+
+  const editMessage = (text: string) => {
+    if (text === content) {
+      setIsEditing(false);
+      return;
+    }
+    onEdit?.(text);
+  };
 
   return (
     <Stack
@@ -250,7 +287,54 @@ function Message({
       </Box>
       <Flex direction={"column"} w={"full"} px={1} color={styles.color}>
         <Flex direction={"row"} w={"full"}>
-          <Text fontSize={"md"}>{content}</Text>
+          {isEditing ? (
+            <Stack direction={"row"} align={"center"} w={"full"}>
+              <Input
+                m={2}
+                value={editText}
+                onChange={(e) => setEditText(e.target.value)}
+                placeholder="Edit message"
+                w={"full"}
+                autoFocus
+                onBlur={() => {
+                  setIsEditing(false);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    setIsEditing(false);
+                    editMessage(editText);
+                  }
+
+                  if (e.key === "Escape") {
+                    setIsEditing(false);
+                    setEditText(content);
+                  }
+                }}
+              />
+              <IconButton
+                aria-label="Done"
+                icon={<BsCheck />}
+                variant="ghost"
+                colorScheme="green"
+                onClick={() => {
+                  setIsEditing(false);
+                  editMessage(editText);
+                }}
+              />
+              <IconButton
+                aria-label="Cancel"
+                icon={<BsX />}
+                variant="ghost"
+                colorScheme="red"
+                onClick={() => {
+                  setIsEditing(false);
+                  setEditText(content);
+                }}
+              />
+            </Stack>
+          ) : (
+            <Text fontSize={"md"}>{content}</Text>
+          )}
         </Flex>
         <Stack direction={"row"} w={"full"} divider={<StackDivider />} mt={1}>
           <Text fontSize={"xs"}>{createdAt}</Text>
@@ -258,17 +342,35 @@ function Message({
       </Flex>
       <Spacer />
       <AnimatePresence>
-        {isHovering && (
-          <ButtonGroup>
+        {isHovering && !isEditing && (
+          <ButtonGroup spacing={2} mr={10}>
             {isSelf && (
-              <IconButton
-                aria-label="Like"
-                icon={<BsTrash />}
-                size={"sm"}
-                variant="ghost"
-                mx={6}
-                colorScheme="red"
-              />
+              <>
+                <IconButton
+                  aria-label="Edit"
+                  icon={<BsPencil />}
+                  size={"sm"}
+                  variant="ghost"
+                  colorScheme="blue"
+                  onClick={() => {
+                    if (isEditing) {
+                      editMessage(editText);
+                    }
+
+                    setIsEditing(!isEditing);
+                  }}
+                />
+
+                <IconButton
+                  aria-label="Delete"
+                  icon={<BsTrash />}
+                  size={"sm"}
+                  variant="ghost"
+                  colorScheme="red"
+                  onClick={onDelete}
+                  mr={10}
+                />
+              </>
             )}
           </ButtonGroup>
         )}

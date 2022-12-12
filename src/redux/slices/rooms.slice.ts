@@ -139,6 +139,50 @@ const sendMessage = createAsyncThunk<
   return data.data.message;
 });
 
+const editMessage = createAsyncThunk<
+  Message,
+  {
+    roomId: string;
+    messageId: string;
+    text: string;
+  }
+>("rooms/editMessage", async ({ roomId, messageId, text }) => {
+  const response = await fetch(`${API}/rooms/${roomId}/messages/${messageId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify({
+      text: text,
+    }),
+  });
+
+  const data = await response.json();
+
+  return data.data.message;
+});
+
+const deleteMessage = createAsyncThunk<
+  Message,
+  {
+    roomId: string;
+    messageId: string;
+  }
+>("rooms/deleteMessage", async ({ roomId, messageId }) => {
+  const response = await fetch(`${API}/rooms/${roomId}/messages/${messageId}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+
+  const data = await response.json();
+
+  return data.data.message;
+});
+
 const roomsSlice = createSlice({
   name: "rooms",
   initialState,
@@ -163,6 +207,34 @@ const roomsSlice = createSlice({
 
         state.rooms.sort((a, b) =>
           b.metadata.createdAt.localeCompare(a.metadata.createdAt)
+        );
+      }
+    },
+
+    editMessageLocal(state, action) {
+      const room = state.rooms.find(
+        (room) => room.metadata.id === action.payload.roomId
+      );
+
+      if (room) {
+        const message = room.messages.find(
+          (message) => message.id === action.payload.id
+        );
+
+        if (message) {
+          message.text = action.payload.text;
+        }
+      }
+    },
+
+    deleteMessageLocal(state, action) {
+      const room = state.rooms.find(
+        (room) => room.metadata.id === action.payload.roomId
+      );
+
+      if (room) {
+        room.messages = room.messages.filter(
+          (message) => message.id !== action.payload.id
         );
       }
     },
@@ -276,6 +348,36 @@ const roomsSlice = createSlice({
       state.isSending = false;
       state.error = action.error.message;
     });
+
+    // Edit message
+    builder.addCase(editMessage.fulfilled, (state, action) => {
+      const room = state.rooms.find(
+        (room) => room.metadata.id === action.payload.roomId
+      );
+
+      if (room) {
+        const message = room.messages.find(
+          (message) => message.id === action.payload.id
+        );
+
+        if (message) {
+          message.text = action.payload.text;
+        }
+      }
+    });
+
+    // Delete message
+    builder.addCase(deleteMessage.fulfilled, (state, action) => {
+      const room = state.rooms.find(
+        (room) => room.metadata.id === action.payload.roomId
+      );
+
+      if (room) {
+        room.messages = room.messages.filter(
+          (message) => message.id !== action.payload.id
+        );
+      }
+    });
   },
 });
 
@@ -284,6 +386,8 @@ export const roomActions = {
   fetchRooms,
   loadMessages,
   sendMessage,
+  editMessage,
+  deleteMessage,
   ...roomsSlice.actions,
 };
 

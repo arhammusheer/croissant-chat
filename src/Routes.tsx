@@ -118,6 +118,16 @@ const Routing = () => {
               dispatch(roomActions.addMessage(data.data));
             }
             break;
+          case "chat:delete":
+            if (user.profile?.id !== data.data.userId) {
+              dispatch(roomActions.deleteMessageLocal(data.data));
+            }
+            break;
+          case "chat:edit":
+            if (user.profile?.id !== data.data.userId) {
+              dispatch(roomActions.editMessageLocal(data.data));
+            }
+            break;
         }
       };
 
@@ -160,8 +170,14 @@ const Routing = () => {
           <Route path="/passwordless" element={<PasswordlessCallback />} />
         </>
       )}
-      <Route path={"/terms-of-service"} element={<Markdown url="/terms-of-service.md" />} />
-      <Route path={"/privacy-policy"} element={<Markdown url="/privacy-policy.md" />} />
+      <Route
+        path={"/terms-of-service"}
+        element={<Markdown url="/terms-of-service.md" />}
+      />
+      <Route
+        path={"/privacy-policy"}
+        element={<Markdown url="/privacy-policy.md" />}
+      />
       <Route path="*" element={<_404 />} />
     </Routes>
   );

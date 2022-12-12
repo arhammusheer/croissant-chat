@@ -44,6 +44,19 @@ const login = createAsyncThunk<User, LoginParams>(
   }
 );
 
+const logout = createAsyncThunk("user/logout", async (anything) => {
+  const response = await fetch(`${API}/auth/logout`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    credentials: "include",
+  });
+
+  return response;
+});
+
 const passwordlessLogin = createAsyncThunk<
   User,
   {
@@ -226,11 +239,29 @@ const userSlice = createSlice({
     builder.addCase(loginWithGoogle.pending, (state) => {
       state.loading = true;
     });
+
+    // Logout
+    builder.addCase(logout.fulfilled, (state) => {
+      state.loading = false;
+      state.isLoggedIn = false;
+      state.profile = null;
+    });
+
+    builder.addCase(logout.rejected, (state) => {
+      state.loading = false;
+      state.isLoggedIn = false;
+      state.error = "Logout failed";
+    });
+
+    builder.addCase(logout.pending, (state) => {
+      state.loading = true;
+    });
   },
 });
 
 export const userActions = {
   login,
+  logout,
   passwordlessLogin,
   getProfile,
   randomizeEmoji,

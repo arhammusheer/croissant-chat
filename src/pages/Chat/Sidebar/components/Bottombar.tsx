@@ -79,6 +79,10 @@ const AccountMenu = ({ children }: { children: React.ReactNode }) => {
     dispatch(userActions.randomizeEmoji());
   };
 
+  const logout = () => {
+    dispatch(userActions.logout());
+  };
+
   return (
     <>
       <Menu isLazy>
@@ -96,11 +100,13 @@ const AccountMenu = ({ children }: { children: React.ReactNode }) => {
           <MenuItem icon={<Icon as={BsFillMoonFill} />} onClick={changeEmoji}>
             Change Emoji
           </MenuItem>
-          <MenuItem icon={<Icon as={BsFillPersonFill} />}>Account</MenuItem>
+          {/* <MenuItem icon={<Icon as={BsFillPersonFill} />}>Account</MenuItem> */}
           <MenuItem icon={<Icon as={IoMdSettings} />} onClick={onOpen}>
             Settings
           </MenuItem>
-          <MenuItem icon={<Icon as={IoMdLogOut} />}>Logout</MenuItem>
+          <MenuItem icon={<Icon as={IoMdLogOut} />} onClick={logout}>
+            Logout
+          </MenuItem>
         </MenuList>
       </Menu>
       <SettingsModal isOpen={isOpen} onClose={onClose} />

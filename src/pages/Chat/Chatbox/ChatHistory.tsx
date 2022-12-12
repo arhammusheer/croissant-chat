@@ -58,11 +58,6 @@ function ChatHistory({
     }
   };
 
-  const playSound = (url: string) => {
-    const audio = new Audio(url);
-    audio.play();
-  };
-
   const scrollToBottom = (
     ref: React.RefObject<HTMLDivElement>,
     smooth = false

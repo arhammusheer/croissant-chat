@@ -4,7 +4,7 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import LoginWithPassword from "./pages/auth/LoginWithPassword";
 import Register from "./pages/auth/Register";
 import Chat from "./pages/Chat/Chat";
-import Landing from "./pages/Landing";
+import Landing from "./pages/Landing/Landing";
 import Loading from "./pages/Loading";
 import _404 from "./pages/errors/_404";
 import { AppDispatch, RootState } from "./redux/store";
@@ -16,6 +16,7 @@ import { WS } from "./utils/defaults";
 import { roomActions } from "./redux/slices/rooms.slice";
 import Login from "./pages/auth/Login";
 import PasswordlessCallback from "./pages/auth/Passwordless";
+import Markdown from "./pages/Landing/Markdown";
 
 const Routing = () => {
   const [ws, setWs] = useState<WebSocket | null>(null);
@@ -159,6 +160,8 @@ const Routing = () => {
           <Route path="/passwordless" element={<PasswordlessCallback />} />
         </>
       )}
+      <Route path={"/terms-of-service"} element={<Markdown url="/terms-of-service.md" />} />
+      <Route path={"/privacy-policy"} element={<Markdown url="/privacy-policy.md" />} />
       <Route path="*" element={<_404 />} />
     </Routes>
   );

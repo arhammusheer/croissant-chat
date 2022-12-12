@@ -1112,6 +1112,16 @@
   resolved "https://registry.yarnpkg.com/@esbuild/linux-loong64/-/linux-loong64-0.14.54.tgz#de2a4be678bd4d0d1ffbb86e6de779cde5999028"
   integrity sha512-bZBrLAIX1kpWelV0XemxBZllyRmM6vgFQQG2GdNb+r3Fkp0FOh1NJSvekXDs7jq70k4euu1cryLMfU+mTXlEpw==
 
+"@fontsource/open-sans@^4.5.13":
+  version "4.5.13"
+  resolved "https://registry.yarnpkg.com/@fontsource/open-sans/-/open-sans-4.5.13.tgz#2c99e4c055d129a75f14c11b77d040282e0388b8"
+  integrity sha512-/UzqP7ZFk145XAq8KG4pvFPP7UQhtreDGXgqXZjagCDreKxcrhwn/x7DYz9rPcycWkLUVApIybcoczGZiM0cRg==
+
+"@fontsource/unbounded@^4.5.0":
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/@fontsource/unbounded/-/unbounded-4.5.0.tgz#81dcde86d8dc3d6b9233aba10ea46e8a5930f5c7"
+  integrity sha512-gwMoHGHl+qWrLtZ4kA/Zy8OoR4NQAjCAQArRTE0G/o7JDdSGa+PUlWgaer9krMONXZwIwnliQ9dAGjXD7UHTHw==
+
 "@jridgewell/gen-mapping@^0.1.0":
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/@jridgewell/gen-mapping/-/gen-mapping-0.1.1.tgz#e5d2e450306a9491e3bd77e323e38d7aff315996"

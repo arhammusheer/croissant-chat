@@ -223,6 +223,7 @@ const roomsSlice = createSlice({
 
         if (message) {
           message.text = action.payload.text;
+          message.updatedAt = action.payload.updatedAt;
         }
       }
     },
@@ -362,6 +363,7 @@ const roomsSlice = createSlice({
 
         if (message) {
           message.text = action.payload.text;
+          message.updatedAt = action.payload.updatedAt;
         }
       }
     });

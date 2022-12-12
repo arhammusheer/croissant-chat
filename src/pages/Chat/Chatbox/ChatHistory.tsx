@@ -57,6 +57,10 @@ function ChatHistory({
     return user?.id === userId;
   };
 
+  const isEdited = (createdAt: string, updatedAt: string) => {
+    return createdAt !== updatedAt;
+  };
+
   const keepBottom = () => {
     if (ref.current) {
       ref.current.scrollTop = ref.current.scrollHeight;
@@ -138,6 +142,7 @@ function ChatHistory({
             authorId={message.userId}
             createdAt={relativeTime(new Date(message.createdAt), new Date())}
             isSelf={isSelf(message.userId)}
+            isEdited={isEdited(message.createdAt, message.updatedAt)}
             onDelete={() =>
               dispatch(
                 roomActions.deleteMessage({
@@ -217,6 +222,7 @@ function Message({
   createdAt,
   authorId,
   isSelf,
+  isEdited,
   onDelete,
   onEdit,
 }: {
@@ -224,6 +230,7 @@ function Message({
   createdAt: string;
   authorId: string;
   isSelf: boolean;
+  isEdited?: boolean;
   onDelete?: () => void;
   onEdit?: (text: string) => void;
 }) {
@@ -338,6 +345,7 @@ function Message({
         </Flex>
         <Stack direction={"row"} w={"full"} divider={<StackDivider />} mt={1}>
           <Text fontSize={"xs"}>{createdAt}</Text>
+          {isEdited && <Text fontSize={"xs"}>Edited</Text>}
         </Stack>
       </Flex>
       <Spacer />

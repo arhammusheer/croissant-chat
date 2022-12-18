@@ -1,14 +1,18 @@
 import {
   Button,
   Flex,
+  IconButton,
   Spacer,
   Text,
   Tooltip,
+  useBreakpointValue,
   useColorModeValue,
 } from "@chakra-ui/react";
+import { BsChevronLeft } from "react-icons/bs";
 import { IoReloadOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { chatActions } from "../../../redux/slices/chat.slice";
 import { roomActions } from "../../../redux/slices/rooms.slice";
 import { AppDispatch, RootState } from "../../../redux/store";
 
@@ -18,8 +22,14 @@ function Titlebox() {
     (state: RootState) =>
       state.rooms.rooms.find((room) => room.metadata?.id === id) || null
   );
+  const isMobile = useBreakpointValue({
+    base: true,
+    md: false,
+  });
 
   const dispatch = useDispatch<AppDispatch>();
+  
+  const onClose = () => dispatch(chatActions.closeChat());
 
   const reload = () => {
     if (!id) return;
@@ -47,6 +57,14 @@ function Titlebox() {
       bg={styles.bg}
       alignItems={"center"}
     >
+      {isMobile && (
+        <IconButton
+          icon={<BsChevronLeft />}
+          onClick={onClose}
+          aria-label="close"
+          variant={"ghost"}
+        />
+      )}
       <Title text={room?.metadata?.name || "Loading..."} />
       <Spacer />
       <Button

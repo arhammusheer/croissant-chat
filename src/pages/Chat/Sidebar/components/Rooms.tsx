@@ -19,7 +19,7 @@ import { AppDispatch, RootState } from "../../../../redux/store";
 import distanceNormalize from "../../../../utils/distanceNormalize";
 import relativeTime from "../../../../utils/relativeTime";
 
-function Rooms() {
+function Rooms({ onClick }: { onClick?: () => void }) {
   const rooms = useSelector((state: RootState) => state.rooms);
   const location = useSelector((state: RootState) => state.location);
   const dispatch = useDispatch<AppDispatch>();
@@ -61,7 +61,7 @@ function Rooms() {
       {rooms.rooms &&
         rooms.rooms.map((room) => (
           <Link to={`/chat/${room.metadata?.id}`} key={room.metadata?.id}>
-            <motion.div {...motionConfig}>
+            <motion.div {...motionConfig} onClick={onClick}>
               <Room
                 key={room.metadata?.id}
                 name={`${room.metadata?.name}`}

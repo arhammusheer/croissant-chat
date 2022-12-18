@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
+import chatSlice from "./slices/chat.slice";
 import locationSlice from "./slices/location.slice";
 import peopleSlice from "./slices/people.slice";
 import roomsSlice from "./slices/rooms.slice";
@@ -11,6 +12,7 @@ const store = configureStore({
     rooms: roomsSlice,
     location: locationSlice,
     people: peopleSlice,
+    chat: chatSlice,
   },
 });
 

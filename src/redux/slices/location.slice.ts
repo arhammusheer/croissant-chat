@@ -21,7 +21,7 @@ const initialState: LocationState = {
     longitude: 0,
   },
 
-  radius: 5,
+  radius: 100000,
 
   isAvailable: false,
   timestamp: 0,

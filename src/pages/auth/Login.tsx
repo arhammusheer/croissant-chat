@@ -33,7 +33,7 @@ import { API, GOOGLE_CLIENT_ID } from "../../utils/defaults";
 function Login() {
   return (
     <Flex
-      h={"100vh"}
+      h={"100dvh"}
       w={"full"}
       justifyContent={"center"}
       alignItems={"center"}

@@ -23,7 +23,7 @@ function _404() {
 
   return (
     <Stack
-      h={"100vh"}
+      h={"100dvh"}
       w={"full"}
       bg={`linear-gradient(rgba(0,0,0, 0.9), rgba(0,0,0, 0.9)), url(${_404Img})`}
       backgroundSize="100px"

@@ -43,7 +43,7 @@ const PasswordlessCallback = () => {
       align={"center"}
       justify={"center"}
       w={"full"}
-      h={"100vh"}
+      h={"100dvh"}
     >
       <Image src={croissant} alt="Croissant Chat" h={"64px"} w={"64px"} />
       {error && (

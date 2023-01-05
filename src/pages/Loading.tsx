@@ -6,7 +6,7 @@ const Loading = () => {
   return (
     <Stack
       w={"full"}
-      h={"100vh"}
+      h={"100dvh"}
       alignItems={"center"}
       justifyContent={"center"}
       bg={useColorModeValue("white", "black")}

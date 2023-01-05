@@ -100,7 +100,7 @@ const DesktopView = ({
 }) => {
   return (
     <Grid
-      h={"100vh"}
+      h={"100dvh"}
       w={"full"}
       templateColumns={"repeat(10, 1fr)"}
       bg={styles.base.bg}
@@ -122,7 +122,7 @@ const DesktopView = ({
         <Box
           overflowY={"scroll"}
           h={{
-            base: "calc(100vh - 100px)",
+            base: "calc(100dvh - 100px)",
           }}
         >
           <Rooms />
@@ -166,12 +166,12 @@ const MobileView = ({
   const onOpen = () => dispatch(chatActions.openChat());
 
   return (
-    <Stack h={"100vh"} w={"full"} bg={styles.base.bg} overflowY={"hidden"}>
+    <Stack h={"100dvh"} w={"full"} bg={styles.base.bg} overflowY={"hidden"}>
       <Topbar logo={logo} title={"Croissant Chat"} reload={reload} />
       <Box
         overflowY={"scroll"}
         h={{
-          base: "calc(100vh - 100px)",
+          base: "calc(100dvh - 100px)",
         }}
       >
         <Rooms onClick={onOpen} />

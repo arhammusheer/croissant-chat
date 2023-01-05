@@ -37,8 +37,8 @@ function Landing() {
   };
 
   return (
-    <Box w={"100%"} h={"100vh"} bg={styles.bg} color={styles.color}>
-      <Container maxW="container.xl" h={"100%"} maxH={"100vh"}>
+    <Box w={"100%"} h={"100dvh"} bg={styles.bg} color={styles.color}>
+      <Container maxW="container.xl" h={"100%"} maxH={"100dvh"}>
         <Stack
           direction={"column"}
           h={"100%"}

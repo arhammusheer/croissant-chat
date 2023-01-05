@@ -39,7 +39,7 @@ function Chatbox() {
       <Titlebox />
       <Box
         h={{
-          base: "calc(100vh - 50px - 80px)",
+          base: "calc(100dvh - 50px - 80px)",
         }}
         overflowY={"hidden"}
       >

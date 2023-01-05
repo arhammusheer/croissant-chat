@@ -22,7 +22,7 @@ import { AppDispatch, RootState } from "../../redux/store";
 function LoginWithPassword() {
   return (
     <Flex
-      h={"100vh"}
+      h={"100dvh"}
       w={"full"}
       justifyContent={"center"}
       alignItems={"center"}

@@ -110,23 +110,50 @@ const DesktopView = ({
       templateColumns={"300px 1fr"}
       templateRows={"50px 1fr 50px"}
     >
-      <GridItem gridArea="sidetop">
+      <GridItem
+        gridArea="sidetop"
+        border={"1px solid"}
+        borderColor={styles.menu.border}
+      >
         <Topbar logo={logo} title={"Croissant Chat"} reload={reload} />
       </GridItem>
-      <GridItem gridArea="siderooms" overflowY={"scroll"} p={2}>
+      <GridItem
+        gridArea="siderooms"
+        overflowY={"scroll"}
+        p={2}
+        borderRight={"1px solid"}
+        borderLeft={"1px solid"}
+        borderColor={styles.menu.border}
+      >
         <Rooms />
       </GridItem>
-      <GridItem gridArea="sidebottom">
+      <GridItem
+        gridArea="sidebottom"
+        border={"1px solid"}
+        borderColor={styles.menu.border}
+      >
         <Bottombar emoji={user.emoji} emojiBg={user.background} />
       </GridItem>
 
-      <GridItem gridArea={"topbar"}>
+      <GridItem
+        gridArea={"topbar"}
+        border={"1px solid"}
+        borderLeft={"none"}
+        borderColor={styles.menu.border}
+      >
         <Titlebox />
       </GridItem>
-      <GridItem gridArea={"chat"} overflowY={"scroll"}>
+      <GridItem gridArea={"chat"} overflowY={"scroll"} p={2}>
         <Outlet />
       </GridItem>
-      <GridItem gridArea={"message"} px={2} py={1}>
+      <GridItem
+        gridArea={"message"}
+        px={2}
+        py={1}
+        border={"1px solid"}
+        borderLeft={"none"}
+        borderColor={styles.menu.border}
+      >
         <SendMessage />
       </GridItem>
     </Grid>

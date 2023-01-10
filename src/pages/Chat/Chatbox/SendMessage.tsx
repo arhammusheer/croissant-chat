@@ -14,27 +14,6 @@ import { roomActions } from "../../../redux/slices/rooms.slice";
 import { AppDispatch, RootState } from "../../../redux/store";
 
 function SendMessage() {
-  const styles = {
-    bg: useColorModeValue("white", "black"),
-  };
-
-  return (
-    <Flex
-      w={"full"}
-      h={"80px"}
-      p={4}
-      position={"static"}
-      bottom={0}
-      alignItems={"center"}
-      bg={styles.bg}
-      direction={"column"}
-    >
-      <ChatInput />
-    </Flex>
-  );
-}
-
-function ChatInput() {
   const { id } = useParams<{ id: string }>();
   const [message, setMessage] = useState<string>("");
 
@@ -55,7 +34,7 @@ function ChatInput() {
   };
 
   return (
-    <InputGroup w={"full"}>
+    <InputGroup>
       <Input
         placeholder={`Message Here`}
         value={message}

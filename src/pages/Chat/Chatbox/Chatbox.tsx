@@ -35,21 +35,10 @@ function Chatbox() {
   }, [dispatch, id]);
 
   return (
-    <Stack direction={"column"} gap={0} overflowY={"hidden"} h={"full"}>
-      <Titlebox />
-      <Box
-        h={{
-          base: "calc(100dvh - 50px - 80px)",
-        }}
-        overflowY={"hidden"}
-      >
-        <ChatHistory
-          messages={room?.messages || []}
-          isLoading={room?.isLoading || false}
-        />
-      </Box>
-      <SendMessage />
-    </Stack>
+    <ChatHistory
+      messages={room?.messages || []}
+      isLoading={room?.isLoading || false}
+    />
   );
 }
 

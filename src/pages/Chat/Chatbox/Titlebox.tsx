@@ -28,7 +28,7 @@ function Titlebox() {
   });
 
   const dispatch = useDispatch<AppDispatch>();
-  
+
   const onClose = () => dispatch(chatActions.closeChat());
 
   const reload = () => {
@@ -49,14 +49,7 @@ function Titlebox() {
   };
 
   return (
-    <Flex
-      w={"full"}
-      h={"50px"}
-      borderBottom={"1px"}
-      borderColor={styles.border.color}
-      bg={styles.bg}
-      alignItems={"center"}
-    >
+    <Flex align={"center"} h={"full"}>
       {isMobile && (
         <IconButton
           icon={<BsChevronLeft />}

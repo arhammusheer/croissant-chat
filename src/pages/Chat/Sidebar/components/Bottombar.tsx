@@ -43,18 +43,7 @@ function Bottombar({ emoji, emojiBg }: { emoji: string; emojiBg: string }) {
   };
 
   return (
-    <Flex
-      w={"full"}
-      h={"50px"}
-      borderTop={"1px"}
-      borderColor={styles.border}
-      justifyContent={"space-between"}
-      zIndex={1}
-      padding={2}
-      position={"static"}
-      bottom={0}
-      alignItems={"center"}
-    >
+    <Flex justifyContent={"space-between"} alignItems={"center"} h={"full"}>
       <AccountMenu>
         <EmojiAvatar emoji={emoji} bg={emojiBg} size={30} />
       </AccountMenu>

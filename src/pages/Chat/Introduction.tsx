@@ -31,15 +31,7 @@ function Introduction() {
   };
 
   return (
-    <Box
-      w={"full"}
-      h={"full"}
-      p={4}
-      overflowY={"scroll"}
-      overflowX={"hidden"}
-      bg={styles.bg}
-      color={styles.color}
-    >
+    <Box w={"full"} h={"full"} p={4} bg={styles.bg} color={styles.color}>
       {loading ? (
         <Text>Loading...</Text>
       ) : (

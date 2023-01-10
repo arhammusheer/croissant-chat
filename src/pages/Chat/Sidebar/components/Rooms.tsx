@@ -57,7 +57,7 @@ function Rooms({ onClick }: { onClick?: () => void }) {
   };
 
   return (
-    <Stack spacing={2} p={2} w={"full"} h={"full"} zIndex={0}>
+    <Stack spacing={2}>
       {rooms.rooms &&
         rooms.rooms.map((room) => (
           <Link to={`/chat/${room.metadata?.id}`} key={room.metadata?.id}>

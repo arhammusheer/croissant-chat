@@ -121,67 +121,43 @@ function ChatHistory({
   }, [messages]);
 
   return (
-    <Box
-      overflowY={"scroll"}
-      ref={ref}
-      overflowX={"hidden"}
-      // direction={"column"}
-      w={"full"}
-      h={"full"}
-      // justify={"flex-end"}
-    >
-      <Box
-        maxH={"full"}
-        h={`calc(100% - ${stackRef.current?.clientHeight}px)`}
-      />
-      <Stack direction={"column"} ref={stackRef}>
-        {messages.map((message, index) => (
-          <Message
-            key={`${message.id}-${index}`}
-            content={message.text}
-            authorId={message.userId}
-            createdAt={relativeTime(new Date(message.createdAt), new Date())}
-            isSelf={isSelf(message.userId)}
-            isEdited={isEdited(message.createdAt, message.updatedAt)}
-            onDelete={() =>
-              dispatch(
-                roomActions.deleteMessage({
-                  roomId: message.roomId,
-                  messageId: message.id,
-                })
-              )
-            }
-            onEdit={(text: string) =>
-              dispatch(
-                roomActions.editMessage({
-                  roomId: message.roomId,
-                  messageId: message.id,
-                  text,
-                })
-              )
-            }
-          />
-        ))}
-        {messages.length === 0 && (
-          <Stack direction={"column"} p={4}>
-            <Heading color={useColorModeValue("gray.600", "gray.400")}>
-              Welcome to {room?.metadata.name || ""}
-            </Heading>
-            <Text fontSize={"md"}>No messages yet</Text>
-          </Stack>
-        )}
-      </Stack>
-      <AnimatePresence>
-        {!isBottom && (
-          <ScrollToBottomBar
-            onClick={() => {
-              scrollToBottom(ref, true);
-            }}
-            unseen={unseen}
-          />
-        )}
-      </AnimatePresence>
-    </Box>
+    <Stack direction={"column"} h={"full"}>
+      {messages.map((message, index) => (
+        <Message
+          key={`${message.id}-${index}`}
+          content={message.text}
+          authorId={message.userId}
+          createdAt={relativeTime(new Date(message.createdAt), new Date())}
+          isSelf={isSelf(message.userId)}
+          isEdited={isEdited(message.createdAt, message.updatedAt)}
+          onDelete={() =>
+            dispatch(
+              roomActions.deleteMessage({
+                roomId: message.roomId,
+                messageId: message.id,
+              })
+            )
+          }
+          onEdit={(text: string) =>
+            dispatch(
+              roomActions.editMessage({
+                roomId: message.roomId,
+                messageId: message.id,
+                text,
+              })
+            )
+          }
+        />
+      ))}
+      {messages.length === 0 && (
+        <Stack direction={"column"} p={4}>
+          <Heading color={useColorModeValue("gray.600", "gray.400")}>
+            Welcome to {room?.metadata.name || ""}
+          </Heading>
+          <Text fontSize={"md"}>No messages yet</Text>
+        </Stack>
+      )}
+    </Stack>
   );
 }
 

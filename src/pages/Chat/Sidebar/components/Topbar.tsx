@@ -28,35 +28,18 @@ function Topbar({
   title: string;
   reload: () => void;
 }) {
-  const styles = {
-    bg: useColorModeValue("white", "gray.900"),
-    color: useColorModeValue("gray.800", "white"),
-    border: useColorModeValue("gray.200", "gray.800"),
-  };
-
   return (
-    <Flex
-      alignItems={"center"}
-      padding={3}
-      borderBottom={"1px"}
-      borderColor={styles.border}
-      zIndex={1}
-      h={"50px"}
-    >
-      <Flex alignItems={"center"} justifyContent={"space-between"} w={"full"}>
-        <Link to={"/chat"}>
-          <Avatar size={"sm"} src={logo} />
-        </Link>
-        <Heading size={"sm"} ml={2}>
-          {title}
-        </Heading>
-        <Spacer />
-        <IconButton
-          aria-label={"Settings"}
-          icon={<Icon as={IoReloadOutline} />}
-          onClick={reload}
-        />
-      </Flex>
+    <Flex alignItems={"center"} justifyContent={"space-between"} h={"full"} px={2}>
+      <Link to={"/chat"}>
+        <Avatar size={"sm"} src={logo} />
+      </Link>
+      <Heading size={"sm"}>{title}</Heading>
+      <Spacer />
+      <IconButton
+        aria-label={"Settings"}
+        icon={<Icon as={IoReloadOutline} />}
+        onClick={reload}
+      />
     </Flex>
   );
 }

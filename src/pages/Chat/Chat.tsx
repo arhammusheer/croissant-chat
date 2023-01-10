@@ -11,7 +11,6 @@ import {
   Box,
   Drawer,
   DrawerBody,
-  DrawerCloseButton,
   DrawerContent,
   DrawerOverlay,
   Grid,
@@ -20,16 +19,17 @@ import {
   Stack,
   useBreakpointValue,
   useColorModeValue,
-  useDisclosure,
 } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
+import { chatActions } from "../../redux/slices/chat.slice";
 import { roomActions } from "../../redux/slices/rooms.slice";
 import { AppDispatch, RootState } from "../../redux/store";
 import Bottombar from "./Sidebar/components/Bottombar";
 import Rooms from "./Sidebar/components/Rooms";
 import Topbar from "./Sidebar/components/Topbar";
-import { chatActions } from "../../redux/slices/chat.slice";
+import Titlebox from "./Chatbox/Titlebox";
+import SendMessage from "./Chatbox/SendMessage";
 
 function Chat() {
   const user = useSelector((state: RootState) => state.user);
@@ -101,45 +101,33 @@ const DesktopView = ({
   return (
     <Grid
       h={"100dvh"}
-      w={"full"}
-      templateColumns={"repeat(10, 1fr)"}
       bg={styles.base.bg}
-      overflowY={"hidden"}
+      templateAreas={`
+        "sidetop topbar"
+        "siderooms chat"
+        "sidebottom message"
+      `}
+      templateColumns={"300px 1fr"}
+      templateRows={"50px 1fr 50px"}
     >
-      <GridItem
-        colSpan={{
-          base: 10,
-          sm: 4,
-          md: 2,
-        }}
-        bg={styles.menu.bg}
-        color={styles.menu.color}
-        overflowY={"hidden"}
-        borderRight={"1px"}
-        borderColor={styles.menu.border}
-      >
+      <GridItem gridArea="sidetop">
         <Topbar logo={logo} title={"Croissant Chat"} reload={reload} />
-        <Box
-          overflowY={"scroll"}
-          h={{
-            base: "calc(100dvh - 100px)",
-          }}
-        >
-          <Rooms />
-        </Box>
-        <Spacer />
+      </GridItem>
+      <GridItem gridArea="siderooms" overflowY={"scroll"} p={2}>
+        <Rooms />
+      </GridItem>
+      <GridItem gridArea="sidebottom">
         <Bottombar emoji={user.emoji} emojiBg={user.background} />
       </GridItem>
-      <GridItem
-        colSpan={{
-          base: 10,
-          sm: 6,
-          md: 8,
-        }}
-        bg={styles.chat.bg}
-        color={styles.chat.color}
-      >
+
+      <GridItem gridArea={"topbar"}>
+        <Titlebox />
+      </GridItem>
+      <GridItem gridArea={"chat"} overflowY={"scroll"}>
         <Outlet />
+      </GridItem>
+      <GridItem gridArea={"message"} px={2} py={1}>
+        <SendMessage />
       </GridItem>
     </Grid>
   );
